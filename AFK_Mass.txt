@@ -1,0 +1,29 @@
+@name AFK_Mass
+@inputs 
+@outputs 
+@persist MASS_MAX MASS_MUL MASS_OTHER
+@persist State [E EC]:entity
+
+@trigger 
+
+interval(1000)
+
+if(first())
+{
+    MASS_MAX = 50000
+    MASS_MUL = 2000
+    MASS_OTHER = MASS_MAX / MASS_MUL
+    
+    E = entity()
+    EC = E:isConstrainedTo()
+}
+
+if(State)
+{
+    EC:setMass(MASS_MAX)
+}
+else
+{
+    EC:setMass(MASS_MUL)
+}
+

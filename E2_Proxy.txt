@@ -1,0 +1,249 @@
+@name E2 Proxy
+@inputs NewURL:string [Reset]
+
+@outputs State
+@persist Error
+
+@persist URL:string 
+
+@persist HttpClk HttpData:string HttpDataLen #interval HTTP variables
+@persist DataToWrite:string DataToWriteLen
+
+@persist FileLoaded FileRead:string FileReadLength
+
+@persist FileCurrent:string FilePartCount FileCurrentPart
+@persist [FileCurrentSubStart FileCurrentSubLen] FileCurrentSub:string
+@outputs FileMultiplePartsToWrite FileCurrentPartName:string
+
+@persist [DO_OPTIMISE]
+@persist [URL_INVALID PROGRAM_NAME NEWLINE]:string #constants
+@persist FILE_MAXSIZE [FILE_OUT_PREFIX, FILE_COMM]:string #constants (file-related)
+
+@persist E:entity
+
+# Rewritten in 2018
+# Rev2
+
+#THIS IS A BETA BUILD, BUGS EASILY MAY BE PRESENT
+#Current limitations:
+# * URLs cannot be entered externally (not from GMod)
+# * Output text file names are hardcoded
+# * No silent-mode
+# * No concmd optimisations inbuilt (not sure if needed)
+
+# SIGNALS
+# 0 - Success
+# 1 - Segmentation fault
+# 4 - Bad URL (short for error 404)
+# 
+
+runOnFile(1)
+runOnHTTP(1)
+interval(1)
+    
+if(first())
+{
+    E = entity()
+    #E:setAlpha(0)
+    
+    PROGRAM_NAME = "E2XY" #EE-two-xie
+    URL_INVALID = "0.0.0.0"
+        
+    NEWLINE = toChar(10)
+    
+    FILE_OUT_PREFIX = "proxy_out"
+    FILE_COMM = "proxy_comm.txt"
+        
+    FILE_MAXSIZE = fileMaxSize() * 1024 #1024, not 1000. More info on https://github.com/wiremod/wire/blob/master/lua/entities/gmod_wire_expression2/core/files.lua
+    DO_OPTIMISE = 1 #Allow in-game local variables manipulation for optimisation 
+
+    function setState(N)
+    {
+        State = N
+    }
+    
+    function incState(){setState(State+1)}
+    
+    function printStd(Prefix:string, Msg:string)
+    {
+        print("["+PROGRAM_NAME+":"+Prefix+"] "+Msg)
+    }  
+        
+    function reload()
+    {
+        setState(0)
+            
+        FilePartitions = 0
+        FileMultiplePartsToWrite = 0 #by default
+            
+        Reset=0
+    }
+    
+    function sendSignal(S:string)
+    {
+        fileWrite(FILE_COMM, S)
+    }
+        
+    function string generate_FN_Part_Name(Base:string, CurrentPart, MaxPart)
+    {
+        if(MaxPart < 1)
+        {
+            printStd("Error", "Invalid parts amount, things can be very wrong!")
+        }
+        
+        return Base+"."+format("%05d", toString(CurrentPart))+".txt"
+    }
+    
+    reload()
+        
+}
+    
+if(Reset){reload()}
+    
+HttpClk = httpClk()
+
+switch(State)
+{
+    case 0,
+        #fileCanWrite will be very useful in the next few cases
+        if(fileCanLoad() & fileCanWrite()) 
+        {
+            fileLoad(FILE_COMM)
+            incState()
+        }
+        break
+    case 1,
+        FileLoaded = fileClk()
+        
+        if(FileLoaded)
+        {
+            FileRead = fileRead()
+            FileReadLength = FileRead:length()
+            
+            if(FileReadLength > 1) # something is for input, and it's not a signal
+            {
+                if(FileRead!=URL)
+                {
+                    URL = FileRead
+                    incState()
+                }
+            }
+            else #no input (yet)
+            {
+                printStd("Idle", "No input (yet)")
+                reload()
+            }
+        #}
+        #elseif (!FileLoaded & !fileLoading())
+        #{
+        #    sendSignal("")
+        #    printStd("All good", "Comm file was not present, so we created it")
+        #    reload()
+        }            
+        break    
+    case 2,
+        #Run the internet request
+        if(httpCanRequest()){
+            httpRequest(URL)
+            incState()
+        }
+        break
+    case 3,
+        #Wait for the response
+        HttpData = httpData()
+        HttpDataLen = HttpData:length()
+            
+        if (HttpDataLen)
+        {            
+            printStd("Process", "Data retrieved, now saving...")
+            sendSignal("0")  
+            incState()
+        }
+        elseif (!HttpDataLen & httpCanRequest()) #If loading error
+        {
+            printStd("Error", "Page not found")
+            sendSignal("4")
+            reload()
+        }
+        break
+    case 4,
+        #generate stats for the retrieved data, could be very laggy
+        DataToWrite = httpUrlEncode(HttpData) #Binary-to-text, E2 internal implementation
+        DataToWriteLen = DataToWrite:length() #this variable will be VERY useful in the future
+        
+        incState()
+        break
+    case 5, #send short stats to the OS
+        if(fileCanWrite())
+        {
+            sendSignal(format("O%XW%X", HttpDataLen, DataToWriteLen))
+            incState()
+        }
+        break
+    case 6,
+        #generate stats for file parts (1 layer down)
+        FileCurrentPart = 1
+        FilePartCount = ceil(DataToWriteLen/FILE_MAXSIZE) #ceil, not floor!
+        FileMultiplePartsToWrite = FilePartCount > 1 #not necessary per se, just to make my life easier
+            
+        incState()
+        break    
+    case 7,    #generate stats for the current file part
+        FileCurrentPartName = generate_FN_Part_Name(FILE_OUT_PREFIX, FileCurrentPart, FilePartCount)        
+        
+        if(FileMultiplePartsToWrite)
+        {
+            # I reckon this WILL cause heavy lags since we manipulate large strings
+            # but what can we do?
+            
+            #REMEMBER: sub() starts counting from 1
+            #Syntax: string:Sub(StartingPoint, AmountOfChars)
+            FileCurrentSubStart = ((FileCurrentPart-1)*FILE_MAXSIZE)+1
+            FileCurrentSubLen = min( (FileCurrentPart * FILE_MAXSIZE), DataToWriteLen )
+            FileCurrentSub = DataToWrite:sub(FileCurrentSubStart, FileCurrentSubLen)
+        }
+        
+        incState()
+        break
+    case 8, #wait until we are ready for the next step
+        if(fileCanWrite()){incState()}
+        break
+    case 9, #write to the file part
+        if (FileMultiplePartsToWrite)
+        {
+            if(FileCurrentPart <= FilePartCount)
+            {
+                fileWrite(FileCurrentPartName, FileCurrentSub)                
+                FileCurrentPart++
+            }
+                            
+            #this is a post check, so the next time we 
+            #don't wait for the fileCanWrite to become 1,
+            #which could take another 3-5 seconds
+            if(FileCurrentPart > FilePartCount)
+            {
+                incState()
+            }
+            else
+            {
+                setState(State-2)
+            }
+                            
+        }
+        else
+        {
+            fileWrite(FileCurrentPartName, DataToWrite)
+            incState()
+        }
+        break
+    case 10, #finishing up
+        if(fileCanWrite())
+        {
+            sendSignal("")
+            printStd("Notification", "Task completed")
+            reload()
+        }
+    default, 
+        break
+}
+

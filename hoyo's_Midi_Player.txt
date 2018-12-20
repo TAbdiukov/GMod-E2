@@ -1,0 +1,285 @@
+@name Hoyos Midi Player
+@inputs 
+@outputs Time Ch Pitch I2 DBG Time2 I3:array TMP:array TMPN TMPN2
+@outputs Holo:array DBG2:string I5 I7 P:entity DBG3 TBPM InstSum
+@outputs TMPR:array MAX BPM R:array TMP2:table CMP DBGOFF DBG4:string Play
+@persist URL:string R:array Holo:array I:array I3:array Time Ch Pitch CTime Play
+@persist TMPN TMPN2 TMP2:table I4 CMP I5 TMPR:array MAX BPM I7 R2:array Chs
+@persist P:entity TBPM I2 CS:array MUL I22
+@trigger 
+runOnChat(1)
+interval(10)
+
+    #from sk89q
+    CS[1,string] = "synth/sine_440.wav"
+    CS[2,string] = "synth/tri.wav"
+
+if(first() | duped() | dupefinished())
+{
+    
+
+    #end
+    URL = "http://darkcookies.ueuo.com/midi.php"
+    
+    #URL = "http://freetestphp1.comuv.com/midi.php"
+    #URL = "http://hoyo321.iptime.org/midi.php"
+    #URL = "http://yandex.ru"    
+    
+    function soundPlayM(Channel, SoundPath:string){
+        soundPlay(Channel,soundDuration(SoundPath),SoundPath)
+    }
+
+    function entity:soundPlayM(Channel, SoundPath:string){
+        This:soundPlay(Channel,soundDuration(SoundPath),SoundPath)
+    }
+     
+    
+    MUL=1
+    holoCreate(100)
+    holoPos(100,entity():pos()) 
+    holoParent(100,entity())
+    holoAlpha(100,0)
+}
+if(chatClk(owner()))
+{
+    hideChat(1)
+    if(lastSaid():explode(" "):string(1):lower() == "play" & lastSaid():find("http://"))
+    {
+        if(httpCanRequest())
+        {
+            print("requesting...")
+            runOnHTTP(1)
+            MAX = 0
+            BPM = 0
+            TMP2 = table()
+            R = array()
+            Holo = array()
+            DBG2 = ""
+            I5 = 0
+            I7 = 0
+            TMP = array()
+            TMPN = 0
+            TMPN2 = 0
+            TMPR = array()
+            CMP = 0
+            Play  = 0
+            DBG4 = ""
+            I = array()
+            I3 = array()
+            Time = 0
+            Ch = 0
+            Pitch = 0
+            CTime = 0
+            I2 = 0
+            TBPM = 0
+            P = noentity()
+            Chs = 0
+            TestVar=0
+            R2 = array()
+            httpRequest(URL+"?fn="+lastSaid():sub(6,lastSaid():length()))
+        }
+        else
+        {
+            print("try later")
+        }
+    }
+    elseif(lastSaid():explode(" "):string(1):lower() == "player")
+    {
+        P = findPlayerByName(lastSaid():sub(8,lastSaid():length()))
+        holoUnparent(100)
+        holoPos(100,P:pos())
+        holoParent(100,P)
+    }
+    elseif(lastSaid():lower():trimRight() == "reset")
+    {
+        reset()
+    }
+    elseif(lastSaid():explode(" "):string(1):lower() == "set_bpm")
+    {
+        BPM = lastSaid():explode(" "):string(2):toNumber()
+        print("BPM: "+BPM:toString())
+    }
+    elseif(lastSaid():explode(" "):string(1):lower() == "set_mul")
+    {
+        MUL = lastSaid():explode(" "):string(2):toNumber()
+        BPM = httpData():sub(1,httpData():find("!")-1):toNumber()*MUL
+        print("MUL: "+MUL)
+        print("BPM: "+BPM:toString())
+    }
+    elseif(lastSaid():explode(" "):string(1):lower() == "bpm"){
+        print("BPM: "+BPM:toString())
+    }
+    elseif(lastSaid():explode(" "):string(1):lower() == "mul"){
+        print("MUL: "+MUL)
+    } else {
+        hideChat(0)
+    }
+}
+if(httpClk())
+{ 
+    HDBG = httpData():sub(1,200)
+    print("creating holograms...")
+    timer("holo",0)
+}
+if(clk("holo"))
+{
+    if(holoCanCreate() & holoRemainingSpawns())
+    {
+        I2++
+        Holo:pushEntity(holoCreate(I2))
+        holoAlpha(I2,0)
+        holoScale(I2,vec(50,50,50))
+        holoParent(I2,100)
+        I22=(I2%2)+1
+        Holo[I2,entity]:soundPlayM(I2,CS[I22,string])
+        if(I22==1){
+            soundVolume(I2,0.8)
+        }
+        soundPitch(I2,0)
+        #soundVolume(I2,255)
+        if(I2>41)
+        {
+            I2 = 0
+            TMPN = 0 
+            TMPN2 = 0
+            CMP = 1
+            print("calculating....")
+        }
+        else
+        {
+            timer("holo",0)
+        }
+    }
+    else
+    {
+        timer("holo",0)
+    }
+}
+if(CMP)
+{
+    while(opcounter()<5000)
+    {
+        TMPN = httpData():find("<BR>",TMPN2)
+        TMPN2 = httpData():find("<BR>",TMPN+1)
+        if(TMPN == 0 & TMPN2 == 0)
+        {
+            timer("sd",1500)
+        }
+        TMPR:pushString(TMPN:toString()+" "+TMPN2:toString())
+        if(httpData():sub(TMPN,TMPN2):lower():find("trkend"))
+        {
+            I2++
+            I5++
+            TMP2:pushArray(TMPR)
+            TMPR = array()
+            DBG2 = httpData():sub(TMPR[1,string]:explode(" "):string(1):toNumber(),TMPR[1,string]:explode(" "):string(2):toNumber())
+            if(I2> httpData():sub(1,httpData():find("<BR>",4)):explode(" "):string(2):toNumber())
+            {
+                BPM = httpData():sub(1,httpData():find("!")-1):toNumber()*MUL
+                Chs = httpData():sub(1,httpData():find("<BR>",4)):explode(" "):string(2):toNumber()
+                I2 = 0
+                I7 = 0
+                CMP = 0
+                CTime = realtime()
+                Play = 1
+                print("Done")
+                break
+            }
+        }
+    }
+}
+if(Play)
+{   
+    while(1)
+    {
+        I7++
+        R = httpData():sub(TMP2[I7,array]:string(I3[I7,number]):explode(" "):string(1):toNumber(),TMP2[I7,array]:string(I3[I7,number]):explode(" "):string(2):toNumber()):replace("B",""):replace("R",""):replace(">",""):replace("<",""):explode(" ")
+        Time = R[1,string]:toNumber()
+        DBG4 = httpData():sub(TMP2[I7,array]:string(I3[I7,number]):explode(" "):string(1):toNumber(),TMP2[I7,array]:string(I3[I7,number]):explode(" "):string(2):toNumber())
+        TBPM = BPM
+        DBG = (realtime()-CTime)*TBPM
+        if(I7 > Chs)
+        {
+            I7 = 0
+        }
+        if(DBG > Time)
+        {
+            if(I3[I7,number] <= TMP2[I7,array]:count())
+            {
+                I3[I7,number] = I3[I7,number]+1
+            }
+            Ch = R[3,string]:replace("ch=",""):toNumber()
+            Pitch = R[4,string]:explode("="):string(2):toNumber()
+            DBG3 = R[5,string]:replace("v=",""):toNumber()
+            if(R[2,string]:lower() == "on")
+            {
+                soundPitch(Ch,2^(Pitch/12))
+            }
+            InstSum=0
+            if(DBG3 == 35 | DBG3 == 36)
+            {
+                holoEntity(41):soundPlayM(8,"instruments/bass.wav")
+                soundPitch(8,2^(Pitch/12))
+                InstSum++
+                print("Bass")
+            }
+            if(DBG3 == 51 | DBG3 == 55 | DBG3 == 57 | DBG3 == 59 )#| DBG3 == 49)
+            {
+                holoEntity(41):soundPlayM(9,"instruments/cymbal.wav")
+                soundPitch(9,2^(Pitch/12))
+                InstSum++
+                print("Cymbal "+DBG3:toString())
+            }
+            if(DBG3 == 42 | DBG3 == 44 | DBG3 ==  46)
+            {
+                holoEntity(41):soundPlayM(10,"instruments/hi_hat.wav")
+                soundPitch(10,2^(Pitch/12))
+                InstSum++
+                print("Hi_Hat")
+                
+            }
+            if(DBG3 == 38 | DBG3 == 40)
+            {
+                holoEntity(41):soundPlayM(11,"instruments/snare.wav")
+                soundPitch(11,2^(Pitch/12))
+                InstSum++
+                print("Snare")
+            }
+            if(DBG3 == 43)
+            {
+                holoEntity(41):soundPlayM(12,"instruments/high_tom.wav")
+                soundPitch(12,2^(Pitch/12))
+                InstSum++
+                print("Hi-Tom")
+            }
+            if(DBG3 == 64 | DBG3 == 127 | DBG3 == 90| DBG3 == 110)
+            {
+                holoEntity(41):soundPlay(3,0,"synth/square.wav")#"instruments/PianoC.wav")
+                soundPitch(3,12^(Pitch/24))
+                print(12^(Pitch/12))
+                InstSum++
+            }
+            
+            
+            if(DBG3 == 0 | R[2,string]:lower() == "off")
+            {
+                soundPitch(Ch,0)
+                InstSum++
+            }
+            if(InstSum==0){
+                print("Unknown instrument: "+DBG3)
+            }
+        }
+        if(opcounter()>5000)
+        {
+            break
+            exit()
+        }
+    }
+}
+if(clk("sd"))
+{
+    print("HOYO's E2 MIDI PLAYER:: FATAL ERROR")
+    selfDestruct()
+}
+

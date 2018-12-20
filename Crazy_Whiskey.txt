@@ -1,0 +1,36 @@
+@name Crazy Whiskey
+@inputs WL:wirelink
+@outputs 
+@persist A Min Max K
+@persist [E C]:entity WL:wirelink
+@trigger 
+
+interval(1)
+runOnTick(1)
+runOnChat(1)
+runOnLast(1)
+#runOnSpawn(1)
+#runOnDeath(1)
+
+if(first())
+{
+    A = 1
+    Min = 1
+    Max = 2000
+    
+    K = 4
+    E = entity()
+    C = E:isConstrainedTo()
+    #WL = C:wirelink()
+    
+    function number getVal()
+    {
+        return random(1, 256)#0xFFFFFF)
+    }
+}
+
+while(A & perf())
+{
+    WL[K] = getVal()
+    if(K == Max){K = Min}else{K++}
+}
