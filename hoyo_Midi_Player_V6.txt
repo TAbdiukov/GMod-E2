@@ -1,7 +1,6 @@
 @name hoyo Midi Player V6
-@outputs SPD BPN
-@outputs DBG Played TMPN2  [KN1 KN2] Type
-@outputs Data_L Stats_L R_L T3L T4L HTC2L TRL
+@outputs SPD BPM
+@outputs DBG Played TMPN2 [KN1 KN2] Type
 #@outputs Status:string Ch Pitch V Time [KN1 KN2] KDBG:string J RT
 @persist URL:string BPM IH Holo:array Ch
 @persist TMPN TMPN2 Chs Data:array Stats:array
@@ -30,6 +29,7 @@
 # This listing
 # Fix appropriate chat hide
 # Add chat commands
+# Comments
 
 @persist BasicInstrument:string SmoothSound Replay
 @persist [ClkPlay ClkSoundsStop ClkCMP]
@@ -41,18 +41,22 @@
 @persist HttpData:string 
 @persist [LS LSE1]:string LSE2N
 
-runOnChat(1)
-runOnTick(1)
-
-
 if(first() | duped() | dupefinished())
 {
+    runOnChat(1)
+    runOnTick(1)
+
     E = entity()
     O = owner()
 
-    SPD = 1
+    SPD = 1 #Speed, 1=100%
+    # Smooth sound hack on/off
+    # Ignores MIDI-specified temporary sound pausing
+    # breaks the MIDI specification (slightly), BUT
+    # due to the way GMod sound works, very often
+    # makes compositions sound significantly better.
     SmoothSound = 1
-    Replay = 0
+    Replay = 0 # Replay after finishing on/off
     
     URL = "https://cgi.cse.unsw.edu.au/~z5214048/midi.php"
     BasicInstrument = "/synth/25_pwm_440.wav"
@@ -61,7 +65,7 @@ if(first() | duped() | dupefinished())
     PROGRAM_NAME = "hoyo Midi Player"
     PROGRAM_NAME_SHORT = "Hoyz"
     
-    RESET_TRIGGER_CONST = 0.36 #Higher - more sensitive reset
+    RESET_TRIGGER_CONST = 0.36 #Higher - more sensitive reset. Redundant
     
     function printStd(Prefix:string, Msg:string)
     {
@@ -219,8 +223,11 @@ if(clk("CMP"))#&& !clk("soundsStop"))
     
     while(perf() && ClkCMP)
     {
-        #2
+        #2 
         
+        #==START SECTION==
+        #Commented out code, beginning from v3 by original hoyo
+        #       
         #TMPN = httpData():find("<BR>",TMPN2)
         #TMPN2 = httpData():find("<BR>",TMPN+1)
         #HTD = httpData():sub(TMPN,TMPN2)
@@ -246,6 +253,7 @@ if(clk("CMP"))#&& !clk("soundsStop"))
             #DBG = 0
             #timer("holoCR",150)
         #}
+        #END SECTION
         
         TMPN = HttpData:find("MTrk",TMPN2)
         TMPN2 = HttpData:find("TrkEnd",TMPN+1)
@@ -257,7 +265,6 @@ if(clk("CMP"))#&& !clk("soundsStop"))
         {
             TimeMax = 0
             TMPN2 = 0
-            #DBG = 0
             Played = 0
             
             Ch = 0
@@ -279,8 +286,8 @@ if(clk("CMP"))#&& !clk("soundsStop"))
             setPlay(1)
     
             IH = 0 #holos related
-            RT = systime()
             printState("done!")
+            RT = int(systime())
 
             break
         }
@@ -302,45 +309,37 @@ if(clk("play"))
         Status = R[2,string]
         
         DBG = (systime()-RT)*BPM*SPD
-        print(DBG)
         Time = R[1,string]:replace("<BR>",""):toNumber()
+        
+        if(J == 0){print(DBG:toString()+" "+Time:toString())}
         TimeMax = max(Time, TimeMax)
         
-        if (DBG > (TimeMax + max(BPM*SPD*0.1, 50)) & TimeMax > 0)
+        if (DBG > (TimeMax + max(BPM*SPD*0.1, 20)) & TimeMax > 0)
         {
             setPlay(0)
             reload()
         }
         elseif(Time < DBG)
         {
-        
-#[        if (DBG > RT)
-        {
-            OffLimit++
-        }
-        
-        if(OffLimit > 8)
-        {
-            print("HERE ")
-            setPlay(0)
-            reload()
-        }]#
-
+            #==START CHUNK==
+            #Old ineffecient implementation of TMPN3&4+HTD2
+            #
             #TMPN3[J,number] = httpData():sub(Stats[J,string]:explode(" "):string(1):toNumber(),Stats[J,string]:explode(" "):string(2):toNumber()):find("<BR>",TMPN4[J,number])
             #TMPN4[J,number] = httpData():sub(Stats[J,string]:explode(" "):string(1):toNumber(),Stats[J,string]:explode(" "):string(2):toNumber()):find("<BR>",TMPN3[J,number]+1)
-            #HTD2[J,string] = httpData():sub(Stats[J,string]:explode(" "):string(1):toNumber(),Stats[J,string]:explode(" "):string(2):toNumber()):sub(TMPN3[J,number],TMPN4[J,number])
-            #HTD = HTD2[    
+            #HTD2[J,string] = httpData():sub(Stats[J,string]:explode(" "):string(1):toNumber(),Stats[J,string]:explode(" "):string(2):toNumber()):sub(TMPN3[J,number],TMPN4[J,number])   
+            #==END CHUNK==
+            
             #HTD - current line
-    
             TR = Stats[J,string]:explode(" ")
             
             TMPN_base =  HttpData:sub(TR[1,string]:toNumber(),TR[2,string]:toNumber())
             TMPN3[J,number] = TMPN_base:find("<BR>",TMPN4[J,number])
             
-            TMPN4_old = TMPN4[J,number]
-            TMPN4_new = TMPN_base:find("<BR>",TMPN3[J,number]+1)
-            TMPN_max = max(TMPN_max, TMPN4_old, TMPN4_new) 
-            
+            #==START CHUNK==
+            #Old code - for reset constant-driven reset system
+            #TMPN4_old = TMPN4[J,number]
+            #TMPN4_new = TMPN_base:find("<BR>",TMPN3[J,number]+1)
+            #TMPN_max = max(TMPN_max, TMPN4_old, TMPN4_new) 
             #if(J > 1 & J < MTRKS & 
                 #((TMPN4_old - TMPN4_new) > TMPN_max*RESET_TRIGGER_CONST) & 
                 #(TMPN4_old > 1000 & TMPN4_new < 10)
@@ -350,8 +349,10 @@ if(clk("play"))
                 #setPlay(0)
                 #reload()
             #}
+            #TMPN4[J,number] = TMPN4_new
+            #==END CHUNK==
             
-            TMPN4[J,number] = TMPN4_new
+            TMPN4[J,number] = TMPN_base:find("<BR>",TMPN3[J,number]+1)
             
             HTD2[J,string] = TMPN_base:sub(TMPN3[J,number],TMPN4[J,number])
 
@@ -383,14 +384,13 @@ if(clk("play"))
                     holoEntity(IH):soundPlay(IH,0,BasicInstrument)
                     holoParent(IH,E)
                     soundPitch(IH,0)
-                    #holoAng(IH,ang())
+                    #holoAng(IH,ang()) #No use for performance
                     MTRKS = max(MTRKS,LCh)
                 }
                     
-                #holoEntity(LChR[LCh,number]):soundPlay(LChR[LCh,number],0,"/instruments/pianoc.wav")
                 holoColor(LChR[LCh,number],vec(255*(V==0),255*(V>0),0))
                 soundPitch(LChR[LCh,number],2^(Pitch/12))
-                soundVolume(LChR[LCh,number],V/127)
+                soundVolume(LChR[LCh,number],V) #V/127
                 Played++
             }
             
@@ -400,7 +400,7 @@ if(clk("play"))
                 {
                     LCh = Ch+(Type ? J : 0)
                     holoColor(LChR[LCh,number],vec(127,0,0))
-                    soundPitch(LChR[LCh,number],0)
+                    soundPitch(LChR[LCh,number],0) #faster than soundStop & soundPlay
                 }
             }
         }
@@ -410,5 +410,4 @@ if(clk("play"))
     {
         J = 0
     }
-    
 }
