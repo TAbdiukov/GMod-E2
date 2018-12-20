@@ -1,0 +1,414 @@
+@name hoyo Midi Player V6
+@outputs SPD BPN
+@outputs DBG Played TMPN2  [KN1 KN2] Type
+@outputs Data_L Stats_L R_L T3L T4L HTC2L TRL
+#@outputs Status:string Ch Pitch V Time [KN1 KN2] KDBG:string J RT
+@persist URL:string BPM IH Holo:array Ch
+@persist TMPN TMPN2 Chs Data:array Stats:array
+@persist MTRKS [KN1 KN2] Type OffLimit
+@persist R:array J Time DBG Pitch V Status:string LCh
+@persist LChR:array HTD:string RT SPD
+@persist [TMPN3 TMPN4]:array HTD2:array TR:array
+
+#MOD
+#NOTICE: This is hoyo Midi Player Version 6 UNOFFICIAL
+# Revision: 6
+#
+# Original player by: hoyo
+# Bits of code by: Hyper Thereading, 
+# Modification by: Tassie Lagend
+# keySig = from Hyper Thereading
+#
+#MOD CHANGES:
+# 2 times higher performance (major changes, at least x2)
+# Fix overly verbose output
+# Add useful constants to first(), such as BasicInstrument
+# Remove useless prints
+# State print where it is supposed to be
+# More universal "type" chat command
+# Better use of string operations (partial)
+# This listing
+# Fix appropriate chat hide
+# Add chat commands
+
+@persist BasicInstrument:string SmoothSound Replay
+@persist [ClkPlay ClkSoundsStop ClkCMP]
+@persist TMPN_base:string [TMPN4_old TMPN4_new] TMPN_max
+@persist TimeMax
+@persist [E O]:entity
+@persist [NEWLINE PROGRAM_NAME PROGRAM_NAME_SHORT]:string
+@persist RESET_TRIGGER_CONST 
+@persist HttpData:string 
+@persist [LS LSE1]:string LSE2N
+
+runOnChat(1)
+runOnTick(1)
+
+
+if(first() | duped() | dupefinished())
+{
+    E = entity()
+    O = owner()
+
+    SPD = 1
+    SmoothSound = 1
+    Replay = 0
+    
+    URL = "https://cgi.cse.unsw.edu.au/~z5214048/midi.php"
+    BasicInstrument = "/synth/25_pwm_440.wav"
+    
+    NEWLINE = toChar(10)
+    PROGRAM_NAME = "hoyo Midi Player"
+    PROGRAM_NAME_SHORT = "Hoyz"
+    
+    RESET_TRIGGER_CONST = 0.36 #Higher - more sensitive reset
+    
+    function printStd(Prefix:string, Msg:string)
+    {
+        print(
+                "[" + PROGRAM_NAME_SHORT +
+                ":" + Prefix + "] " +Msg
+            )
+    }
+    
+    function printNum(Variable, VariableName:string)
+    {
+        printStd("Info", VariableName + ": " + Variable:toString())
+    }
+    
+    function printState(S:string)
+    {
+        printStd("State", S)
+    }
+    
+    function setPlay(Value)
+    {
+        if(Value && !ClkPlay)
+        {
+            ClkPlay = 1
+            timer("play",1)
+        }
+        elseif(!Value && ClkPlay)
+        {
+            ClkPlay = 0
+        }
+    }
+    
+    
+    function setCMP(Value)
+    {
+        if(Value && !ClkCMP)
+        {
+            ClkCMP = 1
+            
+            MTRKS = 0
+            TMPN2 = 0            
+            timer("CMP",1)
+        }
+        elseif(!Value && ClkCMP)
+        {
+            ClkCMP = 0
+        }
+    }
+    
+    function reload()
+    {
+        printState("reload")
+        if(Replay)
+        {
+            setCMP(1)
+        }
+        else
+        {
+            reset()
+        }
+    }
+    
+    
+}
+
+if(chatClk(O))
+{
+    LS = O:lastSaid()
+    LSE1 = LS:explode(" "):string(1):lower()
+    LSE2N = LS:explode(" "):string(2):toNumber()
+    
+    switch (LSE1)
+    {
+        #1
+        case "bpm",
+            hideChat(1)
+            printNum(BPM, "BPM")
+            break
+        case "spd",
+            hideChat(1)
+            printNum(SPD, "SPD")
+            break
+        case "type",
+            hideChat(1)
+            printNum(Type, "Type")
+            break
+        case "ss",
+            hideChat(1)
+            printNum(SmoothSound, "SmoothSound (SS)")
+            break
+        #2
+        case "set_bpm",
+            hideChat(1)
+            BPM = LSE2N
+            printNum(BPM, "BPM")
+            break
+        case "set_spd",
+            hideChat(1)
+            SPD = LSE2N
+            printNum(SPD, "SPD")
+            break
+        case "set_type",
+            hideChat(1)
+            Type = LSE2N
+            printNum(Type, "Type")
+            break
+        case "set_ss",
+            hideChat(1)
+            SmoothSound = LSE2N
+            printNum(SmoothSound, "SmoothSound (SS)")
+            break
+        #3
+        case "play",
+            hideChat(1)
+            
+            if(LS:find("http") & !LS:lower():explode(".mid"):string(2))
+            {
+                if(httpCanRequest())
+                {
+                    printState("requesting...")
+                    runOnHTTP(1)
+                    LChR = array()
+                    holoDeleteAll()
+                    httpRequest(URL+"?fn="+httpUrlEncode(LS:sub(6,LS:length())))
+                }
+                else
+                {
+                    printState("try again later")
+                }
+            }
+            else
+            {
+                printState("Invalid syntax for 'play' request")
+            }
+                
+            break
+        case "reset",
+            hideChat(1)
+            reset()
+            break
+    }
+}
+
+if(httpClk())
+{ 
+    printState("calculating...")
+    HttpData = httpData()
+    BPM = HttpData:sub(1,HttpData:find("<BR>")):explode("!"):string(1):toNumber()
+    setCMP(1)
+}
+
+if(clk("CMP"))#&& !clk("soundsStop"))
+{
+    if(ClkCMP){timer("CMP",1)}
+    
+    while(perf() && ClkCMP)
+    {
+        #2
+        
+        #TMPN = httpData():find("<BR>",TMPN2)
+        #TMPN2 = httpData():find("<BR>",TMPN+1)
+        #HTD = httpData():sub(TMPN,TMPN2)
+        #if(!HTD:find("MTrk") & !HTD:lower():find("sysex") &!HTD:lower():find("meta"))
+        #{
+            #Data:pushString(HTD:replace("<",""):replace(">",""):replace("BR",""))
+        #}
+        #if(HTD:find("MTrk"))
+        #{
+            #MTRKS++
+        #}
+        #if(HTD:find("TrkEnd"))
+        #{
+            #I++
+            #Stats[I,array] = Data
+            #Data = array()
+        #}
+        #if(TMPN2 == 0)
+        #{
+            #CMP = 0
+            #I2 = I
+            #RT = 0
+            #DBG = 0
+            #timer("holoCR",150)
+        #}
+        
+        TMPN = HttpData:find("MTrk",TMPN2)
+        TMPN2 = HttpData:find("TrkEnd",TMPN+1)
+        
+        Stats:pushString(TMPN:toString()+" "+TMPN2:toString())
+        MTRKS++
+        
+        if(!TMPN)
+        {
+            TimeMax = 0
+            TMPN2 = 0
+            #DBG = 0
+            Played = 0
+            
+            Ch = 0
+            HTD = ""
+            
+            TR = array()
+            TMPN3 = array()
+            TMPN4 = array()
+            HTD2 = array() # For fixes      
+            
+            TMPN_max = 0
+            
+            for(I99 = 0,MTRKS)
+            {
+                soundPitch(I99, 0)
+            }
+            
+            setCMP(0)
+            setPlay(1)
+    
+            IH = 0 #holos related
+            RT = systime()
+            printState("done!")
+
+            break
+        }
+    }
+}
+
+
+if(clk("play"))
+{
+    if(ClkPlay){timer("play",1)}
+    
+    while(perf() & ClkPlay)
+    {
+        J++
+        
+        HTD  = HTD2[J,string]
+        R = HTD:explode(" ")
+            
+        Status = R[2,string]
+        
+        DBG = (systime()-RT)*BPM*SPD
+        print(DBG)
+        Time = R[1,string]:replace("<BR>",""):toNumber()
+        TimeMax = max(Time, TimeMax)
+        
+        if (DBG > (TimeMax + max(BPM*SPD*0.1, 50)) & TimeMax > 0)
+        {
+            setPlay(0)
+            reload()
+        }
+        elseif(Time < DBG)
+        {
+        
+#[        if (DBG > RT)
+        {
+            OffLimit++
+        }
+        
+        if(OffLimit > 8)
+        {
+            print("HERE ")
+            setPlay(0)
+            reload()
+        }]#
+
+            #TMPN3[J,number] = httpData():sub(Stats[J,string]:explode(" "):string(1):toNumber(),Stats[J,string]:explode(" "):string(2):toNumber()):find("<BR>",TMPN4[J,number])
+            #TMPN4[J,number] = httpData():sub(Stats[J,string]:explode(" "):string(1):toNumber(),Stats[J,string]:explode(" "):string(2):toNumber()):find("<BR>",TMPN3[J,number]+1)
+            #HTD2[J,string] = httpData():sub(Stats[J,string]:explode(" "):string(1):toNumber(),Stats[J,string]:explode(" "):string(2):toNumber()):sub(TMPN3[J,number],TMPN4[J,number])
+            #HTD = HTD2[    
+            #HTD - current line
+    
+            TR = Stats[J,string]:explode(" ")
+            
+            TMPN_base =  HttpData:sub(TR[1,string]:toNumber(),TR[2,string]:toNumber())
+            TMPN3[J,number] = TMPN_base:find("<BR>",TMPN4[J,number])
+            
+            TMPN4_old = TMPN4[J,number]
+            TMPN4_new = TMPN_base:find("<BR>",TMPN3[J,number]+1)
+            TMPN_max = max(TMPN_max, TMPN4_old, TMPN4_new) 
+            
+            #if(J > 1 & J < MTRKS & 
+                #((TMPN4_old - TMPN4_new) > TMPN_max*RESET_TRIGGER_CONST) & 
+                #(TMPN4_old > 1000 & TMPN4_new < 10)
+            #)
+            #{
+                #print("HERE, "+TMPN4_old+" "+TMPN4_new)
+                #setPlay(0)
+                #reload()
+            #}
+            
+            TMPN4[J,number] = TMPN4_new
+            
+            HTD2[J,string] = TMPN_base:sub(TMPN3[J,number],TMPN4[J,number])
+
+            V = HTD:lower():replace("<",""):explode("v="):string(2):explode(" "):string(1):toNumber()
+            Ch = HTD:lower():explode("ch="):string(2):explode(" "):string(1):toNumber()
+            Pitch = HTD:lower():explode("n="):string(2):explode(" "):string(1):toNumber()
+                
+            #keySig = from Hyper Thereading
+            if(HTD:lower():find("keysig"))
+            {
+                #NOT always present in midi
+                KDBG = HTD
+                KN1 = -(HTD:lower():find("major") ? 0 : 3)
+                KN2 = ((abs(R[3,string]:replace("<",""):toNumber()) <=7 ? R[3,string]:replace("<",""):toNumber() : 0) + 8)
+            } 
+            Pitch += KN1 + KN2
+            #end of quote
+                
+            if(Status:lower() == "on")
+            {
+                LCh = Ch+(Type ? J : 0)
+                if(!holoEntity(LChR[LCh,number]) & holoCanCreate() & holoRemainingSpawns())
+                {
+                    #if new holo needed as far as I understand
+                    IH++
+                    LChR[LCh,number] = IH
+                    Holo:pushEntity(holoCreate(IH))
+                    holoPos(IH,E:pos()+vec(0,0,IH*12))
+                    holoEntity(IH):soundPlay(IH,0,BasicInstrument)
+                    holoParent(IH,E)
+                    soundPitch(IH,0)
+                    #holoAng(IH,ang())
+                    MTRKS = max(MTRKS,LCh)
+                }
+                    
+                #holoEntity(LChR[LCh,number]):soundPlay(LChR[LCh,number],0,"/instruments/pianoc.wav")
+                holoColor(LChR[LCh,number],vec(255*(V==0),255*(V>0),0))
+                soundPitch(LChR[LCh,number],2^(Pitch/12))
+                soundVolume(LChR[LCh,number],V/127)
+                Played++
+            }
+            
+            if(!SmoothSound)
+            {
+                if(Status:lower() == "off" | (Status:lower() == "on" & !V))
+                {
+                    LCh = Ch+(Type ? J : 0)
+                    holoColor(LChR[LCh,number],vec(127,0,0))
+                    soundPitch(LChR[LCh,number],0)
+                }
+            }
+        }
+    }
+
+    if(J>MTRKS)
+    {
+        J = 0
+    }
+    
+}
