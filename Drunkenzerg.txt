@@ -1,0 +1,49 @@
+@name Drunkenzerg
+@inputs 
+@outputs L N RAM_MB SLen
+@persist A:array S:string L EXP MUL_MB
+@persist K T1:string
+@trigger 
+
+interval(1)
+runOnTick(1)
+runOnLast(1)
+
+
+
+if(first())
+{
+    N = 0
+    EXP = 10
+    L = 2^EXP
+    #Assume char = 2 bytes (UTF)
+    MUL_MB = 2* (EXP/20)
+    
+    A = array()
+    
+    function string expRepeatStr(Num)
+    {
+        K = 1
+        T1 = ""
+        while(K <= Num & perf())
+        {
+            T1 = T1 + T1 + toChar(random(1,255))
+            K++
+        }
+        return T1
+    }
+}
+
+while(perf())
+{
+    N = A:count()    
+        
+    if(mod(N, 1000) == 0)
+    {
+        RAM_MB = N*MUL_MB
+    }
+    
+    S = expRepeatStr(EXP)
+    SLen = S:length()
+    A:pushString(S)
+}
