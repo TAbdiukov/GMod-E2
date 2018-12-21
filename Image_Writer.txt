@@ -1,0 +1,192 @@
+@name Image Writer
+@inputs DS:wirelink
+@outputs Percent Buf State:string
+@persist AI Retry Buffer RGB:vector
+@persist [E O]:entity [Ar]:array [Img URL_PHP Prefix S]:string [I Length]
+@persist [NEWLINE PROGRAM_NAME PROGRAM_NAME_SHORT]:string
+@persist SPD
+@persist [LS LS1 LS2]:string 
+#@model models/hunter/blocks/cube05x05x05.mdl
+
+#Revision 2
+#CHANGES
+# Err handling
+# Chat commands
+# Minor fixes incl. percent
+# Lenient url chk
+# States
+#TODO
+# Fast mode
+
+if(first())
+{
+    runOnHTTP(1)
+    runOnChat(1)
+    Prefix = "+"
+    E = entity()
+    O = owner()
+    URL_PHP = "https://cgi.cse.unsw.edu.au/~z5214048/image.php"   
+    SPD = 2 #*100%     
+    
+    PROGRAM_NAME = "Image writer"
+    PROGRAM_NAME_SHORT = "Imgw"
+    
+    function printStd(Prefix:string, Msg:string)
+    {
+        print(
+                "[" + PROGRAM_NAME_SHORT +
+                ":" + Prefix + "] " +Msg
+            )
+    }
+    
+    function printErr(Msg:string){printStd("Err", Msg)}
+    
+    function setState(S:string)
+    {
+        State = S
+        printStd("State",S)
+    }
+    
+    if(DS)
+    {
+        E:deleteWire("DS")
+        printStd("Info","DS WL was removed for safety reasons")
+    }
+}
+ 
+Req = httpCanRequest()
+Fin = changed(Req)&Req
+
+if(chatClk(O)){
+    LS = O:lastSaid()
+    Exp = LS:explode(" ")
+    LS1 = Exp[1, string]
+    LS2 = Exp[2, string]
+    
+    switch (LS1)
+    {
+        case "img",
+            hideChat(1)
+            if(DS)
+            {
+                if(LS2:sub(1, 4) == "http")
+                {
+                    if(State == "Finished!" | State == "")
+                    {
+                        Img = LS2
+                        httpRequest(Img)
+                        timer("checkImg",1)
+                        setState("Checking Image")
+                    }
+                    else
+                    {
+                        printErr("E2 not ready")
+                    }
+                }
+                else
+                {
+                    printErr("Invalid URL!")
+                }
+            }
+            else
+            {
+                printErr("No DS detected")
+            }
+            break
+        case "ready",
+            hideChat(1)
+            printStd("Info","httpCanRequest: "+Req:toString())
+        case "state",
+            hideChat(1)
+            printStd("Info",State)
+            break
+    }
+}
+ 
+if(clk("checkImg")) {
+    timer("checkImg",1)
+    if(Req) {
+        stoptimer("checkImg")
+        S = httpData()
+        if(S) {
+            URL = URL_PHP + format("?image=%s",Img)
+            httpRequest(URL)
+            setState("Requested URL! " + URL)
+            timer("getImg",1)
+        }
+        else
+        {
+            printErr("Failed! File might not exist!")
+        }
+    }
+}
+ 
+if(clk("getImg") | Retry == 1) {
+    timer("getImg",1)
+    if(Req) {
+        stoptimer("getImg")
+        httpRequest(URL)
+        S = httpData()
+        X = S:find("x")
+        #print(X)
+        if(S) {
+            Col = S:find(":")
+            Dim = S:sub(1,Col-1):explode("x")
+            W = Dim[1,string]:toNumber()
+            H = Dim[2,string]:toNumber()
+            S = S:sub(Col+1)
+            #print("W: " + W + " H: " + H)
+            Length = S:length()
+            #Buffer = round(Length/W) #/12
+            Buffer = W*SPD
+            AI = I = Buf = 0
+            Ar = array()
+            DS[1048576]=1
+            DS[1048569]=2   #Color Mode
+            DS[1048572]=H   #Screen Height  H
+            DS[1048573]=W   #Screen Width  W
+            DS[1048574]=1   #Clear Screen
+            if(W == 0 | H == 0){
+                Retry = 0
+                printErr("Wrong dimensions! W: "+W+" H: "+H)
+                State = ""
+            }else{
+                Retry = 0
+                printStd("Info",W+"x"+H+" IMAGE LOADING")
+                timer("writeImg",1)
+                setState("Started writing!")
+            }
+        }
+        else{
+            setState("Waiting on response from: " + URL_PHP)
+            Retry = 1
+        }
+    }
+}
+ 
+if(clk("writeImg")) {
+    timer("writeImg",1)
+    while(perf()&I < Length) {
+        #print("Wrote: " + I + " of: " + Length)
+        I += 3
+        AI += 1
+        #2: R*65536 + G*256 + B;
+        Color = (toByte(S,I-2)-16)*65536+(toByte(S,I-1)-16)*256+(toByte(S,I)-16)
+        #RGB = vec((toByte(S,I-2)-16), (toByte(S,I-1)-16), (toByte(S,I)-16))
+        Ar[AI,number] = Color
+        if(AI >= Buffer) {
+            DS:writeArray(Buf,Ar)
+            AI = 0
+            Ar = array()
+            Buf += Buffer
+        }
+    }
+    if(I == Length) {
+        S = ""
+        DS:writeArray(Buf,Ar)
+        stoptimer("writeImg")
+        E:deleteWire("DS")
+        setState("Finished!")
+    }
+    Percent = int(I*100/Length)
+}
