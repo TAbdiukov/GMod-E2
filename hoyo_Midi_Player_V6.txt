@@ -11,7 +11,7 @@
 
 #MOD
 #NOTICE: This is hoyo Midi Player Version 6 UNOFFICIAL
-# Revision: 6
+# Revision: 7
 #
 # Original player by: hoyo
 # Bits of code by: Hyper Thereading, 
@@ -314,7 +314,7 @@ if(clk("play"))
         if(J == 0){print(DBG:toString()+" "+Time:toString())}
         TimeMax = max(Time, TimeMax)
         
-        if (DBG > (TimeMax + max(BPM*SPD*0.1, 20)) & TimeMax > 0)
+        if (DBG > (TimeMax + max(BPM*SPD*0.1, 255)) & TimeMax > 0)
         {
             setPlay(0)
             reload()
