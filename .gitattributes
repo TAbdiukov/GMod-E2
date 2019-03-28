@@ -1,0 +1,2 @@
+# E2 is essentially LUA so
+*.txt linguist-language=Lua
