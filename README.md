@@ -14,6 +14,6 @@ Various E2 scripts I publish
 * E2_Proxy - A script from an unfinished project to passing HTTP data over the server's IP address. Frontend needs to be yet written
 * Fake_Moneyprinter - A simplistic fake moneyprinter for Darkrp
 * hoyo_Midi_Player_V6 - Plays MIDI music on the server as it can. Requires. midi.php and mc.php
-* Image_Writer - Prints a real image on the digital screen. Requires image.php
-* Mario_Underwater_Theme - A port from ZSPU
-* QMON - ???
+* Image_Writer - Prints a real-world image on the digital screen. Requires image.php
+* Mario_Underwater_Theme - A port from ZSPU. Play Super Mario Bros Underwater theme
+* QMON - takes a String (non-delimited, ie "9A"), and a user wirelink, and then traverses the user and turns it on and off, pressing the listed entities. Useful for RP (money stealing), Sandbox (pressing random others buttons) or elsewhere  (opening and closing doors)
