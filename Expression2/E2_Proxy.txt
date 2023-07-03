@@ -128,17 +128,17 @@ switch(State)
                     incState()
                 }
             }
+            elseif (!fileLoaded() & !fileLoading())
+            {
+                sendSignal("0")
+                printStd("All good", "Comm file was not present, so we created it")
+                reload()
+            }
             else #no input (yet)
             {
                 printStd("Idle", "No input (yet)")
                 reload()
             }
-        #}
-        #elseif (!FileLoaded & !fileLoading())
-        #{
-        #    sendSignal("")
-        #    printStd("All good", "Comm file was not present, so we created it")
-        #    reload()
         }            
         break    
     case 2,
