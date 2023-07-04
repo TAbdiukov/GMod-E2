@@ -1,5 +1,5 @@
 # Gmod-E2
-Various E2 scripts I publish
+My various E2 scripts.
 
 # Description
 * **AFK_Mass** - Surpasses anti-AFK system in a non-trivial way. Spawn a hover vehicle, place a E2 on it, and sit inside. The vehicle w ill move slightly while you take a break
