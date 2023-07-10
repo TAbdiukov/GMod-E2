@@ -6,13 +6,13 @@
 
 @persist URL:string 
 
-@persist HttpClk HttpData:string HttpDataLen #interval HTTP variables
-@persist DataToWrite:string DataToWriteLen
+@persist HttpClk HttpData:string HttpDataLen HttpDataHash #interval HTTP variables
+@persist DataToWrite:string DataToWriteLen DataToWriteHash
 
 @persist FileLoaded FileRead:string FileReadLength
 
 @persist FileCurrent:string FilePartCount FileCurrentPart
-@persist [FileCurrentSubStart FileCurrentSubLen] FileCurrentSub:string
+@persist [FileCurrentSubStart FileCurrentSubLen FileCurrentSubHash] [FileCurrentSub]:string
 @outputs FileMultiplePartsToWrite FileCurrentPartName:string
 
 @persist [DO_OPTIMISE]
@@ -32,10 +32,11 @@
 # * No concmd optimisations inbuilt (not sure if needed)
 
 # SIGNALS
-# 0 - Success
-# 1 - Segmentation fault
+# 0 - OK
+# 2 - Success: URL access 
 # 4 - Bad URL (short for error 404)
-# 
+# 5 - Segmentation fault (server error)
+# 9 - Success: Overall task
 
 runOnFile(1)
 runOnHTTP(1)
@@ -84,7 +85,7 @@ if(first())
         fileWrite(FILE_COMM, S)
     }
         
-    function string generate_FN_Part_Name(Base:string, CurrentPart, MaxPart)
+    function string generate_FN_Part_Name(Base:string, CurrentPart, MaxPart, CurrentPartHash, MainHash)
     {
         if(MaxPart < 1)
         {
@@ -151,12 +152,13 @@ switch(State)
     case 3,
         #Wait for the response
         HttpData = httpData()
+        HttpDataHash = hash(HttpData)
         HttpDataLen = HttpData:length()
             
         if (HttpDataLen)
         {            
             printStd("Process", "Data retrieved, now saving...")
-            sendSignal("0")  
+            sendSignal("2")  
             incState()
         }
         elseif (!HttpDataLen & httpCanRequest()) #If loading error
@@ -170,17 +172,11 @@ switch(State)
         #generate stats for the retrieved data, could be very laggy
         DataToWrite = httpUrlEncode(HttpData) #Binary-to-text, E2 internal implementation
         DataToWriteLen = DataToWrite:length() #this variable will be VERY useful in the future
+        DataToWriteHash = hash(DataToWrite)
         
         incState()
         break
-    case 5, #send short stats to the OS
-        if(fileCanWrite())
-        {
-            sendSignal(format("O%XW%X", HttpDataLen, DataToWriteLen))
-            incState()
-        }
-        break
-    case 6,
+    case 5,
         #generate stats for file parts (1 layer down)
         FileCurrentPart = 1
         FilePartCount = ceil(DataToWriteLen/FILE_MAXSIZE) #ceil, not floor!
@@ -188,9 +184,8 @@ switch(State)
             
         incState()
         break    
-    case 7,    #generate stats for the current file part
-        FileCurrentPartName = generate_FN_Part_Name(FILE_OUT_PREFIX, FileCurrentPart, FilePartCount)        
-        
+    case 6,    #generate stats for the current file part
+
         if(FileMultiplePartsToWrite)
         {
             # I reckon this WILL cause heavy lags since we manipulate large strings
@@ -201,14 +196,33 @@ switch(State)
             FileCurrentSubStart = ((FileCurrentPart-1)*FILE_MAXSIZE)+1
             FileCurrentSubLen = min( (FileCurrentPart * FILE_MAXSIZE), DataToWriteLen )
             FileCurrentSub = DataToWrite:sub(FileCurrentSubStart, FileCurrentSubLen)
+            FileCurrentSubHash = hash(FileCurrentSub)
         }
         
+
         incState()
         break
-    case 8, #wait until we are ready for the next step
-        if(fileCanWrite()){incState()}
+    case 7, #wait until we are ready for the next step
+        if(fileCanWrite())
+        {
+            if (FileMultiplePartsToWrite)
+            {
+                FileCurrentPartName = generate_FN_Part_Name(FILE_OUT_PREFIX,
+                    FileCurrentPart, FilePartCount,
+                    FileCurrentSubHash, HttpDataHash
+                )
+            }
+            else
+            {
+                FileCurrentPartName = generate_FN_Part_Name(FILE_OUT_PREFIX,
+                    1, 1,
+                    DataToWriteHash, HttpDataHash
+                )
+            }
+            incState()
+        }
         break
-    case 9, #write to the file part
+    case 8, #write to the file part
         if (FileMultiplePartsToWrite)
         {
             if(FileCurrentPart <= FilePartCount)
@@ -236,10 +250,10 @@ switch(State)
             incState()
         }
         break
-    case 10, #finishing up
+    case 9, #finishing up
         if(fileCanWrite())
         {
-            sendSignal("")
+            sendSignal("9")
             printStd("Notification", "Task completed")
             reload()
         }
