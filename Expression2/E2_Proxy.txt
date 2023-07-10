@@ -1,25 +1,27 @@
 @name E2 Proxy
-@inputs NewURL:string [Reset]
+@inputs [Reset]
 
 @outputs State
-@persist Error
 
-@persist URL:string 
+@persist URL:string URLHash
 
-@persist HttpClk HttpData:string HttpDataLen HttpDataHash #interval HTTP variables
+@persist HttpData:string HttpDataLen HttpDataHash #interval HTTP variables
 @persist DataToWrite:string DataToWriteLen DataToWriteHash
 
 @persist FileLoaded FileRead:string FileReadLength
 
-@persist FileCurrent:string FilePartCount FileCurrentPart
+@persist FilePartCount FileCurrentPart
 @persist [FileCurrentSubStart FileCurrentSubLen FileCurrentSubHash] [FileCurrentSub]:string
 @outputs FileMultiplePartsToWrite FileCurrentPartName:string
 
-@persist [DO_OPTIMISE]
-@persist [URL_INVALID PROGRAM_NAME NEWLINE]:string #constants
+
+@persist [PROGRAM_NAME]:string #constants
 @persist FILE_MAXSIZE [FILE_OUT_PREFIX, FILE_COMM]:string #constants (file-related)
 
-@persist E:entity
+# Unused variables
+#@persist [DO_OPTIMISE]
+#@persist [NEWLINE URL_INVALID]:string
+#@persist E:entity
 
 # Rewritten in 2018
 # Rev2
@@ -44,19 +46,19 @@ interval(1)
     
 if(first())
 {
-    E = entity()
+    #E = entity()
     #E:setAlpha(0)
     
     PROGRAM_NAME = "E2XY" #EE-two-xie
-    URL_INVALID = "0.0.0.0"
+    #URL_INVALID = "0.0.0.0"
         
-    NEWLINE = toChar(10)
+    #NEWLINE = toChar(10)
     
     FILE_OUT_PREFIX = "proxy_out"
     FILE_COMM = "proxy_comm.txt"
         
     FILE_MAXSIZE = fileMaxSize() * 1024 #1024, not 1000. More info on https://github.com/wiremod/wire/blob/master/lua/entities/gmod_wire_expression2/core/files.lua
-    DO_OPTIMISE = 1 #Allow in-game local variables manipulation for optimisation 
+    #DO_OPTIMISE = 1 #Allow in-game local variables manipulation for optimisation 
 
     function setState(N)
     {
@@ -74,7 +76,7 @@ if(first())
     {
         setState(0)
             
-        FilePartitions = 0
+        FilePartCount = 0
         FileMultiplePartsToWrite = 0 #by default
             
         Reset=0
@@ -84,15 +86,22 @@ if(first())
     {
         fileWrite(FILE_COMM, S)
     }
-        
-    function string generate_FN_Part_Name(Base:string, CurrentPart, MaxPart, CurrentPartHash, MainHash)
+    
+    function string num2hex(N) # Number to 32-bit hex
+    {
+        return format("%08x", N)
+    }
+    
+    function string generate_FN_Part_Name(Base:string, RqHash, CurrentPart, MaxPart, CurrentPartHash, MainHash)
     {
         if(MaxPart < 1)
         {
             printStd("Error", "Invalid parts amount, things can be very wrong!")
         }
-        
-        return Base+"."+format("%05d", toString(CurrentPart))+".txt"
+    
+        return format("%s.%08x.%08x-%08x.%08x-%08x.txt",
+            Base, RqHash, CurrentPart, MaxPart, CurrentPartHash, MainHash
+        )
     }
     
     reload()
@@ -100,8 +109,6 @@ if(first())
 }
     
 if(Reset){reload()}
-    
-HttpClk = httpClk()
 
 switch(State)
 {
@@ -123,11 +130,9 @@ switch(State)
             
             if(FileReadLength > 1) # something is for input, and it's not a signal
             {
-                if(FileRead!=URL)
-                {
-                    URL = FileRead
-                    incState()
-                }
+                URL = FileRead
+                URLHash = hash(URL)                    
+                incState()
             }
             elseif (!fileLoaded() & !fileLoading())
             {
@@ -207,14 +212,14 @@ switch(State)
         {
             if (FileMultiplePartsToWrite)
             {
-                FileCurrentPartName = generate_FN_Part_Name(FILE_OUT_PREFIX,
+                FileCurrentPartName = generate_FN_Part_Name(FILE_OUT_PREFIX, URLHash,
                     FileCurrentPart, FilePartCount,
                     FileCurrentSubHash, HttpDataHash
                 )
             }
             else
             {
-                FileCurrentPartName = generate_FN_Part_Name(FILE_OUT_PREFIX,
+                FileCurrentPartName = generate_FN_Part_Name(FILE_OUT_PREFIX, URLHash,
                     1, 1,
                     DataToWriteHash, HttpDataHash
                 )
