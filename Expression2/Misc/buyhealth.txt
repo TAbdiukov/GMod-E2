@@ -1,0 +1,6 @@
+@name BuyHealth
+
+interval(1)
+if (owner():health() < 100 & owner():health() > 0) {
+ concmd("say /buyhealth")
+}

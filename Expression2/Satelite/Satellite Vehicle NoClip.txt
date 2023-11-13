@@ -1,0 +1,37 @@
+@name Satellite Vehicle NoClip
+@persist Active Vec:vector [E Seat Dvr]:entity
+@persist Speed W S Eye:angle
+# Unused
+#@persist [M1 M2]
+
+interval(1)
+
+if(first()){
+    E=entity()
+    Seat=E:isConstrainedTo()
+    Vec=E:pos()
+
+    E:propFreeze(1)
+}
+
+Dvr=Seat:driver()
+Active=Dvr:id()>0
+
+if (Active) {
+    W=Dvr:keyForward()
+    A=Dvr:keyLeft()
+    S=Dvr:keyBack()
+    D=Dvr:keyRight()
+    Space=Dvr:keyJump()
+    Shift=Dvr:keySprint()
+    Alt=Dvr:keyWalk()
+    Eye=Dvr:eyeAngles()
+
+    Speed=(10 + Shift*30 - Alt*5)*1.5
+
+    Vec+=vec(W - S,A - D,0):rotate(Eye)*Speed
+    Vec+=vec(0,0,Space)*Speed/2
+    E:setPos(Vec)
+}
+
+if(duped()) {reset()}

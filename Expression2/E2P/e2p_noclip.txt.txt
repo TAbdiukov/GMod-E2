@@ -1,0 +1,5 @@
+@name ep2_noclip
+
+interval(1000)
+
+owner():playerNoclipOn()

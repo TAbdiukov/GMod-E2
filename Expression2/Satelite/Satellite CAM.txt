@@ -1,0 +1,128 @@
+@name Satellite CAM
+@inputs Cam:wirelink
+@outputs Active FLIR
+@persist Find:array [E O TE ECT]:entity Vec:vector Up
+@persist Target Duck Speed Down Mode
+@persist W S M1 M2
+ 
+runOnTick(1)
+
+if(first())
+{    
+    function vector angle:toVector() {return vec(1,0,0):rotate(This)} 
+    
+    function init() {
+        E = entity()
+        O = owner()
+        Target=1
+        
+        Vec=O:toWorld(vec(0,0,100))
+        
+        Active = 0
+        FLIR = 0
+        Mode = 0
+        
+        Find = array()
+    }
+
+    init()
+    
+    ECT = E:isConstrainedTo() 
+    if(ECT:type():lower():find("camera"))
+    {
+        Cam = ECT:wirelink()
+    }
+}
+
+Duck=O:keyDuck()
+W=O:keyForward()
+A=O:keyLeft()
+S=O:keyBack()
+D=O:keyRight()
+Space=O:keyJump()
+Shift=O:keySprint()
+Up=Duck & W
+Down=Duck & S
+M1=O:keyAttack1()
+M2=O:keyAttack2()
+R=O:keyReload()
+Alt=O:keyWalk()
+Eye=O:eyeAngles()
+
+if(M1&$M1&M2){Active=!Active}
+if(M1 & $M1 & !M2) {FLIR=!FLIR}
+
+Mode+=Active&((Up & $Up & (Mode!=2)) - (Down & $Down & (Mode!=0)))
+if($Mode) {print("Mode: "+Mode)}
+
+Cam:entity():createWire(entity(),"FLIR","FLIR")
+Cam:entity():createWire(entity(),"Activated","Active") 
+Cam["FLIR",number]=FLIR
+
+if(!Active){holoDelete(1)}
+
+if(!Mode)
+{
+    rangerDefaultZero(1)
+    Ranger=rangerOffset(10000000,Vec,Eye:toVector())
+
+    #Num=round(Ranger:distance())
+    Speed=10 + Shift*30 - Alt*5
+    
+    Vec+=vec(W - S,A - D,0):rotate(Eye)*Speed
+    Vec+=vec(0,0,Space)*Speed/2
+    
+    Cam["Activated",number]=Active
+    Cam["Angle",angle]=Eye
+    Cam["Position",vector]=Vec
+    
+    holoAlpha(1,Ranger:entity():isValid()*255)
+    holoPos(1,Ranger:entity():pos())
+    holoAng(1,Ranger:entity():angles())
+    holoModel(1,Ranger:entity():model())
+    #holoEntity(1):setModel(Ranger:entity():model())
+
+    if(R) {Vec=O:toWorld(vec(0,0,100))}
+}
+
+if(Mode){
+    TE=Find[Target,entity]
+    
+    if(!Active)
+    {
+        findIncludeEntities(players())
+        Find:clear()
+    } elseif(Active) {
+        findByClass("player")
+        findExcludePlayer(O)
+        Find=findToArray()
+        if(Find:count()){
+            
+            if (Target&$Target) {
+               print("Name: "+TE:name())
+               print("HP: "+TE:health())
+               print("Armor: "+TE:armor())
+            }
+            
+            if(Mode==1){
+                  rangerFilter(TE)
+                  rangerFilter(TE:vehicle())
+                  Round=rangerOffset(120,TE:boxCenterW(),-Eye:toVector())
+        
+                  Vec=TE:boxCenterW() - Eye:toVector()*(Round:distance() - 20)
+                  Cam["Position",vector]=TE:boxCenterW() - Eye:toVector()*(Round:distance() - 20)
+                  Cam["Angle",angle]=Eye
+            } elseif(Mode==2){
+                  Vec=TE:attachmentPos("eyes") + TE:eye()*1.3
+                  Cam["Position",vector]=TE:attachmentPos("eyes") + TE:eye()*1.3
+                  Cam["Angle",angle]=(TE:aimPos() - Vec):toAngle()
+            }
+            
+            Target+=Active&((W & $W & !Duck & Target!=Find:count()) - (S & $S & Target!=1))
+         
+            holoAlpha(1,0)
+         }
+    }
+}
+
+if(duped()) {reset()}

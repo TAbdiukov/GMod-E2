@@ -1,0 +1,173 @@
+@name Satellite Original
+@inputs [Pod Cam EGP]:wirelink
+@outputs DEBUG
+@persist Find:array [String Info]:string Vec:vector Up
+@persist Active Target Speed AddY Down Mode Num W S FLIR M1 M2 Parent
+runOnTick(1)
+DEBUG=ops()
+Active=Pod["Active",number]
+W=Pod["W",number]
+A=Pod["A",number]
+S=Pod["S",number]
+D=Pod["D",number]
+Space=Pod["Space",number]
+Shift=Pod["Shift",number]
+Up=Pod["PrevWeapon",number]
+Down=Pod["NextWeapon",number]
+M1=Pod["Mouse1",number]
+M2=Pod["Mouse2",number]
+R=Pod["R",number]
+Alt=Pod["Alt",number]
+Driver=Pod["Entity",entity]:driver()
+Eye=Pod["Entity",entity]:toLocal(Driver:eyeAngles())
+Cam["FLIR",number]=FLIR
+if(M1 & $M1) {FLIR=!FLIR}
+EGP_bost=1
+
+if(changed(->EGP) & !first()) {reset()}
+
+if(first())
+{
+    Target=1
+    EGP:egpClear()
+    Vec=Pod["Entity",entity]:toWorld(vec(0,0,100))
+    
+    function vector angle:toVector() {return vec(1,0,0):rotate(This)} 
+} 
+
+Connected=->Pod
+Mode+=(Up & $Up & (Mode!=2)) - (Down & $Down & (Mode!=0))
+
+if(!Mode)
+{
+           rangerDefaultZero(1)
+    Ranger=rangerOffset(10000000,Vec,Eye:toVector())
+
+    if(Ranger:entity())
+    {
+        if(Ranger:entity():owner()) {Owner=Ranger:entity():owner():name()}
+        else {Owner="N/A"}
+        String=Ranger:entity():isPlayer() ? "Player: "+Ranger:entity():name() : "Owner: "+Owner
+        Info="Type: "+Ranger:entity():type() + (Ranger:entity():type()=="gmod_wire_expression2" ? "   Name: "+Ranger:entity():getName() : "")
+    }
+    else
+    {
+        String=""
+        Info="Type: world"
+    }
+
+    Num=round(Ranger:distance())
+    Speed=10 + Shift*30 - Alt*5
+    
+    Vec+=vec(W - S,A - D,0):rotate(Eye)*Speed
+    Vec+=vec(0,0,Space)*Speed/2
+    
+    Cam["Activated",number]=Active
+    Cam["Angle",angle]=Eye
+    Cam["Position",vector]=Vec
+    
+    holoAlpha(1,Ranger:entity():isValid()*255)
+    holoPos(1,Ranger:entity():pos())
+    holoAng(1,Ranger:entity():angles())
+    holoModel(1,Ranger:entity():model())
+    #holoEntity(1):setModel(Ranger:entity():model())
+
+    if(R) {Vec=Pod["Entity",entity]:toWorld(vec(0,0,100))}
+}
+
+if(Mode)
+{
+    if(Active)
+    {
+        findByClass("player")
+        findExcludePlayer(Driver)
+        Find=findToArray()
+    }
+    
+    if(!Active)
+    {
+        findIncludeEntities(players())
+        Find:clear()
+    }
+    
+    if(Find:count())
+    {
+        if(Mode==1)
+        {
+                  rangerFilter(Find[Target,entity])
+                  rangerFilter(Find[Target,entity]:vehicle())
+            Round=rangerOffset(120,Find[Target,entity]:boxCenterW(),-Eye:toVector())
+        
+            Vec=Find[Target,entity]:boxCenterW() - Eye:toVector()*(Round:distance() - 20)
+            Cam["Position",vector]=Find[Target,entity]:boxCenterW() - Eye:toVector()*(Round:distance() - 20)
+            Cam["Angle",angle]=Eye
+        }
+        if(Mode==2)
+        {
+            Vec=Find[Target,entity]:attachmentPos("eyes") + Find[Target,entity]:eye()*1.3
+            Cam["Position",vector]=Find[Target,entity]:attachmentPos("eyes") + Find[Target,entity]:eye()*1.3
+            Cam["Angle",angle]=(Find[Target,entity]:aimPos() - Vec):toAngle()
+        }
+        
+        Cam["Activated",number]=Find:count()
+            if (Active&Target&$Target) {
+                hint("Name: "+Find[Target,entity]:name(), 3)
+                hint("HP: "+Find[Target,entity]:health(), 3)
+                hint("Armor: "+Find[Target,entity]:armor(), 3)
+            }
+        String=Find[Target,entity]:name()
+        Target+=(W & $W & Target!=Find:count()) - (S & $S & Target!=1)
+        
+        holoAlpha(1,0)
+    }
+}
+
+if(Active)
+{
+    if($Active)
+    {
+        Center=egpScrSize(Driver)/2
+        
+        EGP:egpBox(1,Center,egpScrSize(Driver))
+        EGP:egpMaterial(1,"effects/combine_binocoverlay")
+        
+        EGP:egpCircle(2,Center,vec2(68,64))
+        EGP:egpMaterial(2,"vgui/hud/xbox_reticle")
+        EGP:egpColor(2,vec4(150,70,70,200))
+        
+        EGP:egpText(4,Info,Center - vec2(0,64))
+        EGP:egpAlign(4,1,1)
+        EGP:egpFont(4,"arial",20)
+        
+        EGP:egpRoundedBox(5,Center + vec2(84,84),vec2(128,26))
+        EGP:egpColor(5,vec4(25,150,25,150))
+        
+        EGP:egpText(6,"",Center + vec2(84,84))
+        EGP:egpAlign(6,1,1)
+        EGP:egpColor(6,vec())
+        EGP:egpFont(6,"arial",20)
+        
+        holoCreate(1)
+        holoMaterial(1,"models/wireframe")
+        holoVisible(1,players(),0)      
+        holoVisible(1,players(),0)
+        holoVisible(1,Driver,1)
+    }
+    
+    Text5=(String!="" ? String:sub(0,26)+(String:length()>26 ? "...     " : "     ") : "")+(!Mode ? toString(Num) : "")
+    
+    if(!EGP_bost) {timer("slow_egp",200)}
+    if(EGP_bost | clk("slow_egp"))
+    {
+        EGP:egpSetText(4,Info)
+        EGP:egpSize(5,vec2(128 + Text5:length()*5,26))
+        EGP:egpSetText(6,Text5)
+    }
+}
+else
+{
+    Cam["Activated",number]=0 
+    holoDelete(1)
+}
+
+if(duped()) {reset()}

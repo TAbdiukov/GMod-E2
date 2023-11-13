@@ -1,0 +1,46 @@
+@name WhoKilledYou
+@outputs [P F]:array O:entity [D K T]
+
+function rp(){P=players()}
+function rf(){
+    K=1
+    F:clear()
+    
+    while(K<=P:count()){
+        F=F:add(array(P[K,entity]:frags()))
+        K++
+    }
+}
+
+if(duped()){entity():propDelete()}
+
+if(first()){
+    O=owner()
+}
+
+interval(1)
+
+
+T++
+D=O:health()<=0
+
+if(T>=30){
+    rp()
+    rf()
+    T=0
+}
+
+if(D&$D){
+    K=1
+    while(K<=P:count()){
+        if(P[K,entity]:frags()>F[K,number]){
+            print(P[K,entity]:name()+" killed you by "+P[K,entity]:weapon():type())
+        }
+        K++
+    }
+}
+    
+
+
+
+
