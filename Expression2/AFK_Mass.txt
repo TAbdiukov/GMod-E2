@@ -1,6 +1,6 @@
 @name AFK_Mass
 @persist MASS_MAX MASS_MUL
-@persist State [E EC]:entity
+@persist Tick [E EC]:entity
 
 #UNUSED
 #@persist MASS_OTHER
@@ -9,6 +9,7 @@ interval(1000)
 
 if(first())
 {
+    Tick = 0
     MASS_MAX = 50000
     MASS_MUL = 2000
 
@@ -18,7 +19,9 @@ if(first())
     EC = E:isConstrainedTo()
 }
 
-if(State)
+Tick = !Tick
+
+if(Tick)
 {
     EC:setMass(MASS_MAX)
 }
