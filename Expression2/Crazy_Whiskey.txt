@@ -17,12 +17,12 @@ if(first())
     A = 1
     Min = 1
     Max = 2000
-    
+
     K = 4
     E = entity()
     C = E:isConstrainedTo()
     #WL = C:wirelink()
-    
+
     function number getVal()
     {
         return random(1, 256)#0xFFFFFF)

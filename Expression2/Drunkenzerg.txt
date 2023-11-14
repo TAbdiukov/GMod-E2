@@ -18,9 +18,9 @@ if(first())
     L = 2^EXP
     #Assume char = 2 bytes (UTF)
     MUL_MB = 2* (EXP/20)
-    
+
     A = array()
-    
+
     function string expRepeatStr(Num)
     {
         K = 1
@@ -36,13 +36,13 @@ if(first())
 
 while(perf())
 {
-    N = A:count()    
-        
+    N = A:count()
+
     if(mod(N, 1000) == 0)
     {
         RAM_MB = N*MUL_MB
     }
-    
+
     S = expRepeatStr(EXP)
     SLen = S:length()
     A:pushString(S)

@@ -13,7 +13,7 @@ if(first())
     MASS_MAX = 50000
     MASS_MUL = 2000
     MASS_OTHER = MASS_MAX / MASS_MUL
-    
+
     E = entity()
     EC = E:isConstrainedTo()
 }

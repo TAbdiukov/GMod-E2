@@ -1,9 +1,9 @@
 @name Chat Spy
 
 runOnChat(1)
+
 if (lastSaidTeam()) {
     print(lastSpoke():name() + ": " +lastSaidTeam())
 } else {
     print(lastSpoke():name() + ": " + lastSaid())
 }
-

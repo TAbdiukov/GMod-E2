@@ -5,7 +5,7 @@
 @persist [E O]:entity [Ar]:array [Img URL_PHP Prefix S]:string [I Length]
 @persist [NEWLINE PROGRAM_NAME PROGRAM_NAME_SHORT]:string
 @persist SPD
-@persist [LS LS1 LS2]:string 
+@persist [LS LS1 LS2]:string
 #@model models/hunter/blocks/cube05x05x05.mdl
 
 #Revision 2
@@ -25,12 +25,12 @@ if(first())
     Prefix = "+"
     E = entity()
     O = owner()
-    URL_PHP = "https://cgi.cse.unsw.edu.au/~z5214048/image.php"   
-    SPD = 2 #*100%     
-    
+    URL_PHP = "https://cgi.cse.unsw.edu.au/~z5214048/image.php"
+    SPD = 2 #*100%
+
     PROGRAM_NAME = "Image writer"
     PROGRAM_NAME_SHORT = "Imgw"
-    
+
     function printStd(Prefix:string, Msg:string)
     {
         print(
@@ -38,22 +38,22 @@ if(first())
                 ":" + Prefix + "] " +Msg
             )
     }
-    
+
     function printErr(Msg:string){printStd("Err", Msg)}
-    
+
     function setState(S:string)
     {
         State = S
         printStd("State",S)
     }
-    
+
     if(DS)
     {
         E:deleteWire("DS")
         printStd("Info","DS WL was removed for safety reasons")
     }
 }
- 
+
 Req = httpCanRequest()
 Fin = changed(Req)&Req
 
@@ -62,7 +62,7 @@ if(chatClk(O)){
     Exp = LS:explode(" ")
     LS1 = Exp[1, string]
     LS2 = Exp[2, string]
-    
+
     switch (LS1)
     {
         case "img",
@@ -102,7 +102,7 @@ if(chatClk(O)){
             break
     }
 }
- 
+
 if(clk("checkImg")) {
     timer("checkImg",1)
     if(Req) {
@@ -120,7 +120,7 @@ if(clk("checkImg")) {
         }
     }
 }
- 
+
 if(clk("getImg") | Retry == 1) {
     timer("getImg",1)
     if(Req) {
@@ -163,7 +163,7 @@ if(clk("getImg") | Retry == 1) {
         }
     }
 }
- 
+
 if(clk("writeImg")) {
     timer("writeImg",1)
     while(perf()&I < Length) {

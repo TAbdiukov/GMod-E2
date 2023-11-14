@@ -7,22 +7,22 @@
 interval(100)
 
 if(first()){
-    
+
     function number entity:isP() { #isPressingEntity()
         return This:keyUse()&This:aimEntity()==entity()
     }
-    
+
     MONEY_MUL = 20
-    
+
     E = entity()
     E:setColor(vec4(15,82,186,255))
     E:setMass(1)
     E:propFreeze(0)
-    
+
     findByClass("player")
     findExcludeEntity(owner())
     TE=findToArray()
-    
+
     M=500
     U=TE[int(random(TE:count())),entity]
 }

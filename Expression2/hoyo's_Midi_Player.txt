@@ -16,15 +16,15 @@ interval(10)
 
 if(first() | duped() | dupefinished())
 {
-    
+
 
     #end
     URL = "http://darkcookies.ueuo.com/midi.php"
-    
+
     #URL = "http://freetestphp1.comuv.com/midi.php"
     #URL = "http://hoyo321.iptime.org/midi.php"
-    #URL = "http://yandex.ru"    
-    
+    #URL = "http://yandex.ru"
+
     function soundPlayM(Channel, SoundPath:string){
         soundPlay(Channel,soundDuration(SoundPath),SoundPath)
     }
@@ -32,11 +32,11 @@ if(first() | duped() | dupefinished())
     function entity:soundPlayM(Channel, SoundPath:string){
         This:soundPlay(Channel,soundDuration(SoundPath),SoundPath)
     }
-     
-    
+
+
     MUL=1
     holoCreate(100)
-    holoPos(100,entity():pos()) 
+    holoPos(100,entity():pos())
     holoParent(100,entity())
     holoAlpha(100,0)
 }
@@ -116,7 +116,7 @@ if(chatClk(owner()))
     }
 }
 if(httpClk())
-{ 
+{
     HDBG = httpData():sub(1,200)
     print("creating holograms...")
     timer("holo",0)
@@ -140,7 +140,7 @@ if(clk("holo"))
         if(I2>41)
         {
             I2 = 0
-            TMPN = 0 
+            TMPN = 0
             TMPN2 = 0
             CMP = 1
             print("calculating....")
@@ -189,7 +189,7 @@ if(CMP)
     }
 }
 if(Play)
-{   
+{
     while(1)
     {
         I7++
@@ -236,7 +236,7 @@ if(Play)
                 soundPitch(10,2^(Pitch/12))
                 InstSum++
                 print("Hi_Hat")
-                
+
             }
             if(DBG3 == 38 | DBG3 == 40)
             {
@@ -259,8 +259,8 @@ if(Play)
                 print(12^(Pitch/12))
                 InstSum++
             }
-            
-            
+
+
             if(DBG3 == 0 | R[2,string]:lower() == "off")
             {
                 soundPitch(Ch,0)

@@ -5,7 +5,7 @@ function rp(){P=players()}
 function rf(){
     K=1
     F:clear()
-    
+
     while(K<=P:count()){
         F=F:add(array(P[K,entity]:frags()))
         K++
@@ -39,8 +39,3 @@ if(D&$D){
         K++
     }
 }
-    
-
-
-
-

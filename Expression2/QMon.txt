@@ -1,7 +1,7 @@
 @name QMon
 @inputs S:string U:wirelink
 @outputs Non Rar:array
-@persist [Max T K A Con Use EL I CheckIfUser] [Ar Tar]:array 
+@persist [Max T K A Con Use EL I CheckIfUser] [Ar Tar]:array
 @persist [Ten O UE CE E]:entity FT:string
 
 function addS(){Rar=Rar:add(findToArray())}
@@ -42,16 +42,16 @@ if(duped()){entity():propDelete()}
 
 if(first()){
     CheckIfUser=0
-    
+
     Max=50
     K=1
     T=1
-    
+
     E=entity()
     O=owner()
-    
+
     concmd("wire_user_model models/jaanus/wiretool/wiretool_range.mdl")
-    
+
     print(4,"Welcome to QMon v2")
     echo("0. Money printer CB1")
     echo("1. Money printer CB3")
@@ -74,7 +74,7 @@ if(first()){
     echo("I. Owner")
     echo("J. Known seats")
     echo("K. Known cars")
-    
+
     sname()
 }
 
@@ -92,18 +92,18 @@ if(rq()){
             echo("Error: User was not connected")
             EL++
         }
-        
+
         if(CheckIfUser&U:entity():type():find("user")<=0&Con){
             echo("Error: Connected device is not user")
             EL++
         }
-        
+
         if(S==""){
             echo("Error: 'S' data was not declared")
             EL++
         }
     }
-        
+
     if(EL==0){
         A=!A
         if(!A){
@@ -115,7 +115,7 @@ if(rq()){
             UE:setColor(vec4(random(255),random(255),random(255),0))
             entity():setColor(vec4(random(255),random(255),random(255),0))
         }
-            
+
         sname()
     }
 }
@@ -125,28 +125,28 @@ if(A){
         A=0
         entity():setColor(vec4(255,255,255,255))
     }
-    
+
     T++
     I++
-    
+
     if(K>Rar:count()&T>Max){
         Rar:clear()
-        
+
         if(d("0")){
             findByModel("models/props_c17/consolebox01a.mdl")
             addS()
         }
-        
+
         if(d("1")){
             findByModel("models/props_c17/consolebox03a.mdl")
             addS()
         }
-        
+
         if(d("2")){
             findByModel("models/props_c17/consolebox05a.mdl")
             addS()
         }
-        
+
         if(d("3")){
             findByModel("models/props_lab/reciever01a.mdl")
             addS()
@@ -156,7 +156,7 @@ if(A){
             findByClass("spawned_money")
             addS()
         }
-        
+
         if(d("5")){
             findByClass("spawned_weapon")
             addS()
@@ -166,17 +166,17 @@ if(A){
             findByClass("dzg_shipment")
             addS()
         }
-        
+
         if(d("7")){
             findByClass("ammo")
             addS()
         }
-        
+
         if(d("8")){
             findByClass("sent_ball")
             addS()
         }
-        
+
         if(d("9")){
             findByClass("gmod_button")
             addS()
@@ -188,17 +188,17 @@ if(A){
             findByClass("gmod_wire_button")
             addS()
         }
-        
+
         if(d("B")){
             findByClass("func_button")
             addS()
         }
-        
+
         if(d("C")){
             findByClass("func_door")
             addS()
         }
-        
+
         if(d("D")){
             findByClass("prop_door_rotating")
             addS()
@@ -208,12 +208,12 @@ if(A){
             findByClass("darkrp_moneypot")
             addS()
         }
-        
+
         if(d("F")){
             findByClass("atm_machine")
             addS()
         }
-        
+
         if(d("G")){
             findByClass("vipammo")
             addS()
@@ -228,7 +228,7 @@ if(A){
         if(d("I")){
             Rar=Rar:add(array(owner()))
         }
-        
+
         if(d("J")){
             findByClass("prop_vehicle_prisoner_pod")
             addS()
@@ -264,11 +264,11 @@ if(A){
             findByClass("Jeep")
             addS()
         }
-        
+
         K=1
         T=0
     }
-    
+
     if(K<=Rar:count()&I>=2){
         #print("Goto ["+Ten:id()+"]"+Ten:type()+"]")
         Ten=Rar[K,entity]

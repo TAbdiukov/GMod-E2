@@ -6,7 +6,7 @@
 @persist URL:string URLHash
 
 @persist HttpData:string HttpDataLen #interval HTTP variables
-@persist DataToWrite:string DataToWriteLen 
+@persist DataToWrite:string DataToWriteLen
 
 @persist FileLoaded FileRead:string FileReadLength
 
@@ -35,7 +35,7 @@
 
 # SIGNALS
 # 0 - OK
-# 2 - Success: URL access 
+# 2 - Success: URL access
 # 4 - Bad URL (short for error 404)
 # 5 - Segmentation fault (server error)
 # 9 - Success: Overall task
@@ -43,71 +43,71 @@
 runOnFile(1)
 runOnHTTP(1)
 interval(1)
-    
+
 if(first())
 {
     #E = entity()
     #E:setAlpha(0)
-    
+
     PROGRAM_NAME = "E2XY" #EE-two-xie
     #URL_INVALID = "0.0.0.0"
-        
+
     #NEWLINE = toChar(10)
-    
+
     FILE_OUT_PREFIX = "proxy_out"
     FILE_COMM = "proxy_comm.txt"
-        
+
     FILE_MAXSIZE = fileMaxSize() * 1024 #1024, not 1000. More info on https://github.com/wiremod/wire/blob/master/lua/entities/gmod_wire_expression2/core/files.lua
-    #DO_OPTIMISE = 1 #Allow in-game local variables manipulation for optimisation 
+    #DO_OPTIMISE = 1 #Allow in-game local variables manipulation for optimisation
 
     function setState(N)
     {
         State = N
     }
-    
+
     function incState(){setState(State+1)}
-    
+
     function printStd(Prefix:string, Msg:string)
     {
         print("["+PROGRAM_NAME+":"+Prefix+"] "+Msg)
-    }  
-        
+    }
+
     function reload()
     {
         setState(0)
-            
+
         FilePartCount = 0
         FileMultiplePartsToWrite = 0 #by default
-            
+
         Reset=0
     }
-    
+
     function sendSignal(S:string)
     {
         fileWrite(FILE_COMM, S)
     }
-    
+
     function string num2hex(N) # Number to 32-bit hex
     {
         return format("%08x", N)
     }
-    
+
     function string generate_FN_Part_Name(Base:string, BaseHash, CurrentPart, MaxPart)
     {
         if(MaxPart < 1)
         {
             printStd("Error", "Invalid parts amount, things can be very wrong!")
         }
-    
+
         return format("%s.%08x.%x-%x.txt",
             Base, BaseHash, CurrentPart, MaxPart
         )
     }
-    
+
     reload()
-        
+
 }
-    
+
 if(Reset){reload()}
 autoPerf(1)
 
@@ -115,7 +115,7 @@ switch(State)
 {
     case 0,
         #fileCanWrite will be very useful in the next few cases
-        if(fileCanLoad() & fileCanWrite()) 
+        if(fileCanLoad() & fileCanWrite())
         {
             fileLoad(FILE_COMM)
             incState()
@@ -123,16 +123,16 @@ switch(State)
         break
     case 1,
         FileLoaded = fileClk()
-        
+
         if(FileLoaded)
         {
             FileRead = fileRead()
             FileReadLength = FileRead:length()
-            
+
             if(FileReadLength > 1) # something is for input, and it's not a signal
             {
                 URL = FileRead
-                URLHash = hash(URL)                    
+                URLHash = hash(URL)
                 incState()
             }
             elseif (!fileLoaded() & !fileLoading())
@@ -146,8 +146,8 @@ switch(State)
                 printStd("Idle", "No input (yet)")
                 reload()
             }
-        }            
-        break    
+        }
+        break
     case 2,
         #Run the internet request
         if(httpCanRequest()){
@@ -158,13 +158,13 @@ switch(State)
     case 3,
         #Wait for the response
         HttpData = httpData()
-        
+
         HttpDataLen = HttpData:length()
-            
+
         if (HttpDataLen)
-        {            
+        {
             printStd("Process", "Data retrieved, now saving...")
-            sendSignal("2")  
+            sendSignal("2")
             incState()
         }
         elseif (!HttpDataLen & httpCanRequest()) #If loading error
@@ -178,7 +178,7 @@ switch(State)
         #generate stats for the retrieved data, could be very laggy
         DataToWrite = httpUrlEncode(HttpData) #Binary-to-text, E2 internal implementation
         DataToWriteLen = DataToWrite:length() #this variable will be VERY useful in the future
-        
+
         incState()
         break
     case 5,
@@ -186,23 +186,23 @@ switch(State)
         FileCurrentPart = 1
         FilePartCount = ceil(DataToWriteLen/FILE_MAXSIZE) #ceil, not floor!
         FileMultiplePartsToWrite = FilePartCount > 1 #not necessary per se, just to make my life easier
-            
+
         incState()
-        break    
+        break
     case 6,    #generate stats for the current file part
 
         if(FileMultiplePartsToWrite)
         {
             # I reckon this WILL cause heavy lags since we manipulate large strings
             # but what can we do?
-            
+
             #REMEMBER: sub() starts counting from 1
             #Syntax: string:Sub(StartingPoint, AmountOfChars)
             FileCurrentSubStart = ((FileCurrentPart-1)*FILE_MAXSIZE)+1
             FileCurrentSubLen = min( (FileCurrentPart * FILE_MAXSIZE), DataToWriteLen )
             FileCurrentSub = DataToWrite:sub(FileCurrentSubStart, FileCurrentSubLen)
         }
-        
+
 
         incState()
         break
@@ -229,11 +229,11 @@ switch(State)
         {
             if(FileCurrentPart <= FilePartCount)
             {
-                fileWrite(FileCurrentPartName, FileCurrentSub)                
+                fileWrite(FileCurrentPartName, FileCurrentSub)
                 FileCurrentPart++
             }
-                            
-            #this is a post check, so the next time we 
+
+            #this is a post check, so the next time we
             #don't wait for the fileCanWrite to become 1,
             #which could take another 3-5 seconds
             if(FileCurrentPart > FilePartCount)
@@ -244,7 +244,7 @@ switch(State)
             {
                 setState(State-2) # To: generate stats for the current file part
             }
-                            
+
         }
         else
         {
@@ -259,6 +259,6 @@ switch(State)
             printStd("Notification", "Task completed")
             reload()
         }
-    default, 
+    default,
         break
 }
