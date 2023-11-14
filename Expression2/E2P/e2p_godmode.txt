@@ -1,5 +1,6 @@
 @name E2P Godmode
 
 runOnTick(1)
+
 owner():setModel("models/player/renamon/renamon.mdl")
 if(owner():health()<999&owner():health()>0){owner():setHealth(999)}
