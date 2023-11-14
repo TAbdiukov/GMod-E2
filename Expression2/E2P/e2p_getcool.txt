@@ -4,10 +4,15 @@
 
 runOnTick(1)
 
-Own=owner()
+if(first())
+{
+    Own=owner()
+}
+
 Pos=Own:pos()
 
-if(Own:health()>0 & R==0) {
+if(Own:health()>0 & R==0)
+{
     entitySpawn("weapon_midascannon", Pos, 1)
     entitySpawn("weapon_crossbow", Pos, 1)
     entitySpawn("weapon_ar2", Pos, 1)
@@ -15,6 +20,6 @@ if(Own:health()>0 & R==0) {
     entitySpawn("weapon_admin_gun_pro", Pos, 1)
     entitySpawn("adminstick", Pos, 1)
     R=1
-    }
+}
     
 if(Own:health()<=0) {R=0}

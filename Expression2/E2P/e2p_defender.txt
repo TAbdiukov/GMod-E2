@@ -2,14 +2,17 @@
 @persist Angle:angle E:entity M1 [A N]:vector
 
 runOnTick(1)
+
 M1=owner():keyAttack2()
 A =owner():aimPos()
 N = owner():pos()
 Angle=vec(A:x()-N:x(),A:y()-N:y(), A:z()-N:z()-50):toAngle()
-if (M1&$M1&owner():weapon():type()!="gmod_tool") {
+
+if (M1&$M1&owner():weapon():type()!="gmod_tool") 
+{
     print(owner():weapon():type())
     E:noCollide(owner())
     E=entitySpawn("rpg_missile", vec(N:x(),N:y(), N:z()+50), Angle, 1)
     E:noCollideAll(1)
-    }
+}
 
