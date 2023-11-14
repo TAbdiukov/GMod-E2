@@ -8,7 +8,7 @@ interval(100)
 
 if(first()){
 
-    function number entity:isP() { #isPressingEntity()
+    function number entity:isUsingPrinter() { #isUsingPrinterPressingEntity()
         return This:keyUse()&This:aimEntity()==entity()
     }
 
@@ -23,6 +23,7 @@ if(first()){
     findExcludeEntity(owner())
     TE=findToArray()
 
+    T=0
     M=500
     U=TE[int(random(TE:count())),entity]
 }
@@ -40,7 +41,7 @@ if(T>=5){
 
 K=1
 while(K<=P:count()){
-    if(P[K,entity]:isP()){
+    if(P[K,entity]:isUsingPrinter()){
         U=P[K,entity]
         M=-MONEY_MUL
     }
