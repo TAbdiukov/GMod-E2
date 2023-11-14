@@ -6,9 +6,9 @@ if(first())
     F = array()
     T = 0
 
-    function get_players(){P=players()}
+    function refresh_players(){P=players()}
 
-    function get_players_frags()
+    function refresh_players_frags()
     {
         K=1
         F:clear()
@@ -29,8 +29,8 @@ T++
 D=O:health()<=0
 
 if(T>=30){
-    get_players()
-    get_players_frags()
+    refresh_players()
+    refresh_players_frags()
     T=0
 }
 
