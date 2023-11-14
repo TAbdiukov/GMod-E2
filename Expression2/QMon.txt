@@ -54,7 +54,6 @@ if(first())
         echo("K. Known cars")
     }
 
-
     function print_status(){
         if(A){
             setName("QMon"+toChar(10)+"WORKING")
