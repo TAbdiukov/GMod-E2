@@ -1,10 +1,9 @@
 @name hoyo Midi Player V6
 @outputs SPD BPM
 @outputs DBG Played TMPN2 [KN1 KN2] Type
-#@outputs Status:string Ch Pitch V Time [KN1 KN2] KDBG:string J RT
 @persist URL:string BPM IH Holo:array Ch
-@persist TMPN TMPN2 Chs Data:array Stats:array
-@persist MTRKS [KN1 KN2] Type OffLimit
+@persist TMPN TMPN2 Stats:array
+@persist MTRKS [KN1 KN2] Type
 @persist R:array J Time DBG Pitch V Status:string LCh
 @persist LChR:array HTD:string RT SPD
 @persist [TMPN3 TMPN4]:array HTD2:array TR:array
@@ -32,14 +31,21 @@
 # Comments
 
 @persist BasicInstrument:string SmoothSound Replay
-@persist [ClkPlay ClkSoundsStop ClkCMP]
-@persist TMPN_base:string [TMPN4_old TMPN4_new] TMPN_max
+@persist [ClkPlay ClkCMP]
+@persist TMPN_base:string
 @persist TimeMax
 @persist [E O]:entity
-@persist [NEWLINE PROGRAM_NAME PROGRAM_NAME_SHORT]:string
-@persist RESET_TRIGGER_CONST
+@persist PROGRAM_NAME_SHORT:string
 @persist HttpData:string
 @persist [LS LSE1]:string LSE2N
+
+# UNUSED
+#@outputs Status:string Ch Pitch V Time [KN1 KN2] KDBG:string J RT
+#@persist [TMPN4_old TMPN4_new] TMPN_max
+#@persist Chs Data:array
+#@persist [NEWLINE PROGRAM_NAME]:string
+#@persist ClkSoundsStop OffLimit
+#@persist RESET_TRIGGER_CONST
 
 if(first() | duped() | dupefinished())
 {
@@ -61,11 +67,19 @@ if(first() | duped() | dupefinished())
     URL = "https://cgi.cse.unsw.edu.au/~z5214048/midi.php"
     BasicInstrument = "/synth/25_pwm_440.wav"
 
-    NEWLINE = toChar(10)
-    PROGRAM_NAME = "hoyo Midi Player"
+    #PROGRAM_NAME = "hoyo Midi Player"
     PROGRAM_NAME_SHORT = "Hoyz"
 
-    RESET_TRIGGER_CONST = 0.36 #Higher - more sensitive reset. Redundant
+    #RESET_TRIGGER_CONST = 0.36 #Higher - more sensitive reset. Redundant
+
+    function init()
+    {
+        ClkPlay = 0
+        ClkCMP = 0
+        Stats = array()
+        J = 0
+        Holo = array()
+    }
 
     function printStd(Prefix:string, Msg:string)
     {
@@ -128,7 +142,7 @@ if(first() | duped() | dupefinished())
         }
     }
 
-
+    init()
 }
 
 if(chatClk(O))
@@ -275,7 +289,7 @@ if(clk("CMP"))#&& !clk("soundsStop"))
             TMPN4 = array()
             HTD2 = array() # For fixes
 
-            TMPN_max = 0
+            #TMPN_max = 0
 
             for(I99 = 0,MTRKS)
             {
@@ -364,7 +378,7 @@ if(clk("play"))
             if(HTD:lower():find("keysig"))
             {
                 #NOT always present in midi
-                KDBG = HTD
+                #KDBG = HTD
                 KN1 = -(HTD:lower():find("major") ? 0 : 3)
                 KN2 = ((abs(R[3,string]:replace("<",""):toNumber()) <=7 ? R[3,string]:replace("<",""):toNumber() : 0) + 8)
             }
