@@ -8,24 +8,24 @@ interval(100)
 
 if(first()){
 
-    function number entity:isUsingPrinter() { #isUsingPrinterPressingEntity()
-        return This:keyUse()&This:aimEntity()==entity()
-    }
+	function number entity:isUsingPrinter() { #isUsingPrinterPressingEntity()
+		return This:keyUse()&This:aimEntity()==entity()
+	}
 
-    MONEY_MUL = 20
+	MONEY_MUL = 20
 
-    E = entity()
-    E:setColor(vec4(15,82,186,255))
-    E:setMass(1)
-    E:propFreeze(0)
+	E = entity()
+	E:setColor(vec4(15,82,186,255))
+	E:setMass(1)
+	E:propFreeze(0)
 
-    findByClass("player")
-    findExcludeEntity(owner())
-    TE=findToArray()
+	findByClass("player")
+	findExcludeEntity(owner())
+	TE=findToArray()
 
-    T=0
-    M=500
-    U=TE[int(random(TE:count())),entity]
+	T=0
+	M=500
+	U=TE[int(random(TE:count())),entity]
 }
 
 
@@ -33,17 +33,17 @@ T++
 P=players()
 
 if(T>=5){
-    M+=MONEY_MUL
-    S=U:name()+toChar(10)+"Sapphire Printer"+toChar(10)+"$"+M
-    setName(S)
-    T=0
+	M+=MONEY_MUL
+	S=U:name()+toChar(10)+"Sapphire Printer"+toChar(10)+"$"+M
+	setName(S)
+	T=0
 }
 
 K=1
 while(K<=P:count()){
-    if(P[K,entity]:isUsingPrinter()){
-        U=P[K,entity]
-        M=-MONEY_MUL
-    }
-    K++
+	if(P[K,entity]:isUsingPrinter()){
+		U=P[K,entity]
+		M=-MONEY_MUL
+	}
+	K++
 }
