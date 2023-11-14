@@ -9,8 +9,6 @@ interval(1)
 runOnTick(1)
 runOnLast(1)
 
-
-
 if(first())
 {
     N = 0
