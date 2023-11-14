@@ -1,122 +1,147 @@
 @name QMon
 @inputs S:string U:wirelink
-@outputs Non Rar:array
-@persist [Max T K A Con Use EL I CheckIfUser] [Ar Tar]:array
-@persist [Ten O UE CE E]:entity FT:string
+@outputs Oscil Elements:array
+@persist [Max T K A Con Use SwitchCheck I CheckIfUser] [RetArray]:array
+@persist [Elements_target O UE CE E]:entity FltType:string
 
-function addS(){Rar=Rar:add(findToArray())}
-function number d(Str:string) {return (S:find(Str:upper())>0)}
-function echo(Str:string) {print(Str)}
-function number rq() {return Use&$Use&O:aimEntity()==entity()}
+if(first())
+{
+    function echo(Str:string) {print(Str)}
 
-function array array:flt(){
-    K=1
-    Tar:clear()
-    while(K<=Ar:count()){
-        FT=Ar[K,entity]:type()
-        if(FT:find("money")|FT:find("printer")){
-           Tar = Tar:add(array(This[K,entity]))
+    function init()
+    {
+        A = 0
+        Elements = array()
+        RetArray = array()
+        
+        Use = 0
+        Oscil = 0
+        I = 0
+        
+        CheckIfUser=0
+    
+        Max=50
+        K=1
+        T=1
+    
+        E=entity()
+        O=owner()
+    
+        concmd("wire_user_model models/jaanus/wiretool/wiretool_range.mdl")
+        if(duped()){entity():propDelete()}
+            
+        print(4,"Welcome to QMon v2")
+        echo("0. Money printer CB1")
+        echo("1. Money printer CB3")
+        echo("2. Money printer CB5")
+        echo("3. Money printer RC1")
+        echo("4. Spawned Money")
+        echo("5. Spawned Weapon")
+        echo("6. DZG Shipment")
+        echo("7. Ammo")
+        echo("8. Sent (heal) Ball")
+        echo("9. Gmod Button")
+        echo("A. Wire Button")
+        echo("B. Func Button")
+        echo("C. Func Door")
+        echo("D. Prop Door Rotating")
+        echo("E. DarkRP Money Pot")
+        echo("F. ATM")
+        echo("G. Vipammo")
+        echo("H. Players (except owner)")
+        echo("I. Owner")
+        echo("J. Known seats")
+        echo("K. Known cars")
+    }
+
+
+    function print_status(){
+        if(A){
+            setName("QMon"+toChar(10)+"WORKING")
+        }elseif(!A){
+            setName("QMon"+toChar(10)+"IDLE")
         }
-        K++
     }
-    return Tar
-}
-
-function sname(){
-    if(A){
-        setName("QMon"+toChar(10)+"WORKING")
-    }elseif(!A){
-        setName("QMon"+toChar(10)+"IDLE")
+    
+    function add_elements(){Elements=Elements:add(findToArray())}
+    function number d(Str:string) {return (S:find(Str:upper())>0)}
+    
+    function array array:flt(){
+        K=1
+        RetArray:clear()
+        while(K<=This:count()){
+            FltType=This[K,entity]:type()
+            if(FltType:find("money")|FltType:find("printer")){
+               RetArray = RetArray:add(array(This[K,entity]))
+            }
+            K++
+        }
+        return RetArray
     }
-}
-
-function vector entity:tpos(){
-    if(This:massCenter()!=vec(0,0,0)){
-        return This:massCenter()-vec(0,0,1)
-    } elseif(This:massCenter()==vec(0,0,0)) {
-        return This:pos()-vec(0,0,1)
+    
+    function vector entity:tpos(){
+        if(This:massCenter()!=vec(0,0,0)){
+            return This:massCenter()-vec(0,0,1)
+        } elseif(This:massCenter()==vec(0,0,0)) {
+            return This:pos()-vec(0,0,1)
+        }
     }
-}
-
-if(duped()){entity():propDelete()}
-
-if(first()){
-    CheckIfUser=0
-
-    Max=50
-    K=1
-    T=1
-
-    E=entity()
-    O=owner()
-
-    concmd("wire_user_model models/jaanus/wiretool/wiretool_range.mdl")
-
-    print(4,"Welcome to QMon v2")
-    echo("0. Money printer CB1")
-    echo("1. Money printer CB3")
-    echo("2. Money printer CB5")
-    echo("3. Money printer RC1")
-    echo("4. Spawned Money")
-    echo("5. Spawned Weapon")
-    echo("6. DZG Shipment")
-    echo("7. Ammo")
-    echo("8. Sent (heal) Ball")
-    echo("9. Gmod Button")
-    echo("A. Wire Button")
-    echo("B. Func Button")
-    echo("C. Func Door")
-    echo("D. Prop Door Rotating")
-    echo("E. DarkRP Money Pot")
-    echo("F. ATM")
-    echo("G. Vipammo")
-    echo("H. Players (except owner)")
-    echo("I. Owner")
-    echo("J. Known seats")
-    echo("K. Known cars")
-
-    sname()
+    
+    function number entity:isUser()
+    {
+        return This:type():lower():find("user")>0
+    }
+    
+    function number switched() {return Use&$Use&O:aimEntity()==entity()}
+    
+    init()
+    print_status()
 }
 
 interval(25)
 
-Non=!Non
+Oscil=!Oscil
 Con=->U
 Use=O:keyAttack2()
 CE=E:isConstrainedTo()
+if(CE:isUser())
+{
+    U = CE:wirelink()
+}
 
-if(rq()){
-    EL=0
+if(switched()){
+    SwitchCheck=0
     if(!A){
         if(!Con){
             echo("Error: User was not connected")
-            EL++
+            SwitchCheck++
         }
 
-        if(CheckIfUser&U:entity():type():find("user")<=0&Con){
+        if(CheckIfUser&!U:entity():isUser()&Con){
             echo("Error: Connected device is not user")
-            EL++
+            SwitchCheck++
         }
 
         if(S==""){
             echo("Error: 'S' data was not declared")
-            EL++
+            SwitchCheck++
         }
     }
 
-    if(EL==0){
+    if(SwitchCheck==0){
         A=!A
-        if(!A){
-            #entity():setColor(vec4(255,255,255,255))
-            UE:propDelete()
-        } else {
+        if(A){
             UE=U:entity()
-            UE:createWire(entity(),"Fire","Non")
+            UE:createWire(entity(),"Fire","Oscil")
             UE:setColor(vec4(random(255),random(255),random(255),0))
             entity():setColor(vec4(random(255),random(255),random(255),0))
         }
+        else
+        {
+            UE:propDelete()
+        }
 
-        sname()
+        print_status()
     }
 }
 
@@ -129,155 +154,154 @@ if(A){
     T++
     I++
 
-    if(K>Rar:count()&T>Max){
-        Rar:clear()
+    if(K>Elements:count()&T>Max){
+        Elements:clear()
 
         if(d("0")){
             findByModel("models/props_c17/consolebox01a.mdl")
-            addS()
+            add_elements()
         }
 
         if(d("1")){
             findByModel("models/props_c17/consolebox03a.mdl")
-            addS()
+            add_elements()
         }
 
         if(d("2")){
             findByModel("models/props_c17/consolebox05a.mdl")
-            addS()
+            add_elements()
         }
 
         if(d("3")){
             findByModel("models/props_lab/reciever01a.mdl")
-            addS()
+            add_elements()
         }
 
         if(d("4")){
             findByClass("spawned_money")
-            addS()
+            add_elements()
         }
 
         if(d("5")){
             findByClass("spawned_weapon")
-            addS()
+            add_elements()
         }
 
         if(d("6")){
             findByClass("dzg_shipment")
-            addS()
+            add_elements()
         }
 
         if(d("7")){
             findByClass("ammo")
-            addS()
+            add_elements()
         }
 
         if(d("8")){
             findByClass("sent_ball")
-            addS()
+            add_elements()
         }
 
         if(d("9")){
             findByClass("gmod_button")
-            addS()
+            add_elements()
         }
 
         if(d("A")){
             findByClass("wire_button")
-            addS()
+            add_elements()
             findByClass("gmod_wire_button")
-            addS()
+            add_elements()
         }
 
         if(d("B")){
             findByClass("func_button")
-            addS()
+            add_elements()
         }
 
         if(d("C")){
             findByClass("func_door")
-            addS()
+            add_elements()
         }
 
         if(d("D")){
             findByClass("prop_door_rotating")
-            addS()
+            add_elements()
         }
 
         if(d("E")){
             findByClass("darkrp_moneypot")
-            addS()
+            add_elements()
         }
 
         if(d("F")){
             findByClass("atm_machine")
-            addS()
+            add_elements()
         }
 
         if(d("G")){
             findByClass("vipammo")
-            addS()
+            add_elements()
         }
 
         if(d("H")){
             findByClass("player")
             findExcludeEntity(owner())
-            addS()
+            add_elements()
         }
 
         if(d("I")){
-            Rar=Rar:add(array(owner()))
+            Elements=Elements:add(array(owner()))
         }
 
         if(d("J")){
             findByClass("prop_vehicle_prisoner_pod")
-            addS()
+            add_elements()
             findByClass("Seat_Airboat")
-            addS()
+            add_elements()
             findByClass("phx_seat")
-            addS()
+            add_elements()
             findByClass("phx_seat1")
-            addS()
+            add_elements()
             findByClass("phx_seat2")
-            addS()
+            add_elements()
             findByClass("phx_seat3")
-            addS()
+            add_elements()
             findByClass("Chair_Plastic")
-            addS()
+            add_elements()
             findByClass("Seat_Jalopy")
-            addS()
+            add_elements()
             findByClass("Seat_Jeep")
-            addS()
+            add_elements()
             findByClass("Chair_Office1")
-            addS()
+            add_elements()
             findByClass("Chair_Office2")
-            addS()
+            add_elements()
             findByClass("Chair_Wood")
-            addS()
+            add_elements()
             findByClass("Pod")
-            addS()
+            add_elements()
         }
 
         if(d("K")){
             findByClass("Airboat")
-            addS()
+            add_elements()
             findByClass("Jeep")
-            addS()
+            add_elements()
         }
 
         K=1
         T=0
     }
 
-    if(K<=Rar:count()&I>=2){
-        #print("Goto ["+Ten:id()+"]"+Ten:type()+"]")
-        Ten=Rar[K,entity]
+    if(K<=Elements:count()&I>=2){
+        #print("Goto ["+Elements_target:id()+"]"+Elements_target:type()+"]")
+        Elements_target=Elements[K,entity]
         UE:setAng(ang(360,0,0))
-        UE:setPos(Ten:tpos())
+        UE:setPos(Elements_target:tpos())
         K++
         I=0
     } else {
         UE:setPos(vec(0,0,0))
     }
-
 }
