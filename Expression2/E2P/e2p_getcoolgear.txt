@@ -1,4 +1,4 @@
-@name E2P_EntitySpawner
+@name E2P GetCoolGear
 @inputs EntityClass:string 
 @outputs R K Own:entity Pos:vector
 
