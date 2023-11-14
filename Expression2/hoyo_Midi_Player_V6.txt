@@ -64,7 +64,7 @@ if(first() | duped() | dupefinished())
     SmoothSound = 1
     Replay = 0 # Replay after finishing on/off
 
-    URL = "https://cgi.cse.unsw.edu.au/~z5214048/midi.php"
+    URL = "https://.../midi.php"
     BasicInstrument = "/synth/25_pwm_440.wav"
 
     #PROGRAM_NAME = "hoyo Midi Player"
