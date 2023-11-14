@@ -3,55 +3,29 @@
 @outputs [NEWLINE Name AS BS CS Mode]:string [E O]:entity
 @persist [T A B C]:array
 
-interval((Tempo*6)/(100*MUL))
-
-if(first()){
-    function title()
-    {
-        setName(Name+Mode+NEWLINE+"Playing ")
-    }
-
-    function spd()
-    {
-        if(PAL){
-            Mode="PAL Mode"
-            MUL=5/6
-        }else{
-            Mode="NTSC Mode"
-            MUL=1
-        }
-
-        title()
-    }
-
-    function rs()
-    {
-        soundPlay(1,Max,AS)
-        soundPlay(2,Max,BS)
-        soundPlay(3,Max,CS)
-
-        soundVolume(1,0.2*Vol)
-        soundVolume(2,0.2*Vol)
-        soundVolume(3,0.3*Vol)
-
-        I=0
-    }
-
+if(first())
+{
     Vol=255
     PAL=1
 
     O=owner()
     E=entity()
 
-    NEWLINE=toChar(10)
-    Name="Mario Underwater Theme"+NEWLINE+"Author: Jasongamer"+NEWLINE+"Modifed & converted to E2 by Tassie Lagend"+NEWLINE
-    Tempo=1
+    NEWLINE = toChar(10)
+    Name = "Mario Underwater Theme"+NEWLINE+"Author: Jasongamer"+NEWLINE+"Modifed & converted to E2 by TAbdiukov"+NEWLINE
+    Mode = "No Mode"
+    Tempo = 1
 
     setName(Name+"Loading")
 
     AS = "synth/25_pwm_440.wav"
     BS = "synth/75_pwm_440.wav"
     CS = "synth/tri.wav"
+
+#init
+    A = array()
+    B = array()
+    C = array()
 
 #trackA:
 
@@ -176,6 +150,37 @@ if(first()){
 
     T=array()
     Max=max(A:count(),B:count(),C:count()) #A:count()
+    
+    function title()
+    {
+        setName(Name+Mode+NEWLINE+"Playing ")
+    }
+
+    function spd()
+    {
+        if(PAL){
+            Mode="PAL Mode"
+            MUL=5/6
+        }else{
+            Mode="NTSC Mode"
+            MUL=1
+        }
+
+        title()
+    }
+
+    function rs()
+    {
+        soundPlay(1,Max,AS)
+        soundPlay(2,Max,BS)
+        soundPlay(3,Max,CS)
+
+        soundVolume(1,0.2*Vol)
+        soundVolume(2,0.2*Vol)
+        soundVolume(3,0.3*Vol)
+
+        I=0
+    }
 
     rs()
 
@@ -185,6 +190,8 @@ if(first()){
 
     spd()
 }
+
+interval((Tempo*6)/(100*MUL))
 
 if (I > 120&I <= 230){Tempo=864}else{Tempo=864} #1000else864
 
@@ -207,5 +214,3 @@ if(M2&$M2&O:aimEntity()==E){
     PAL=!PAL
     spd()
 }
-
-
