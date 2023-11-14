@@ -1,7 +1,7 @@
 @name QMon
 @inputs S:string U:wirelink
 @outputs Oscil Elements:array
-@persist [Max T K A Con Use SwitchCheck I CheckIfUser] [RetArray]:array
+@persist [Max ThrottleTick K A Con Use SwitchCheck I CheckIfUser] [RetArray]:array
 @persist [Elements_target O UE CE E]:entity FltType:string
 
 if(first())
@@ -13,23 +13,23 @@ if(first())
         A = 0
         Elements = array()
         RetArray = array()
-        
+
         Use = 0
         Oscil = 0
         I = 0
-        
+
         CheckIfUser=0
-    
+
         Max=50
         K=1
-        T=1
-    
+        ThrottleTick=1
+
         E=entity()
         O=owner()
-    
+
         concmd("wire_user_model models/jaanus/wiretool/wiretool_range.mdl")
         if(duped()){entity():propDelete()}
-            
+
         print(4,"Welcome to QMon v2")
         echo("0. Money printer CB1")
         echo("1. Money printer CB3")
@@ -62,10 +62,10 @@ if(first())
             setName("QMon"+toChar(10)+"IDLE")
         }
     }
-    
+
     function add_elements(){Elements=Elements:add(findToArray())}
     function number d(Str:string) {return (S:find(Str:upper())>0)}
-    
+
     function array array:flt(){
         K=1
         RetArray:clear()
@@ -78,7 +78,7 @@ if(first())
         }
         return RetArray
     }
-    
+
     function vector entity:tpos(){
         if(This:massCenter()!=vec(0,0,0)){
             return This:massCenter()-vec(0,0,1)
@@ -86,14 +86,14 @@ if(first())
             return This:pos()-vec(0,0,1)
         }
     }
-    
+
     function number entity:isUser()
     {
         return This:type():lower():find("user")>0
     }
-    
+
     function number switched() {return Use&$Use&O:aimEntity()==entity()}
-    
+
     init()
     print_status()
 }
@@ -151,10 +151,10 @@ if(A){
         entity():setColor(vec4(255,255,255,255))
     }
 
-    T++
+    ThrottleTick++
     I++
 
-    if(K>Elements:count()&T>Max){
+    if(K>Elements:count()&ThrottleTick>Max){
         Elements:clear()
 
         if(d("0")){
@@ -291,7 +291,7 @@ if(A){
         }
 
         K=1
-        T=0
+        ThrottleTick=0
     }
 
     if(K<=Elements:count()&I>=2){
