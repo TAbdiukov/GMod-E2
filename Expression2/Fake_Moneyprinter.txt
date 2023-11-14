@@ -7,7 +7,6 @@
 interval(100)
 
 if(first()){
-
 	function number entity:isUsingPrinter() { #isUsingPrinterPressingEntity()
 		return This:keyUse()&This:aimEntity()==entity()
 	}
