@@ -3,37 +3,37 @@
 @persist Target Speed Down Mode W S M1 M2 [O CE]:entity
 
 if(first())
-{    
-    function init() {  
+{
+    function init() {
         O=owner()
         Target=1
-        
+
         Vec=O:toWorld(vec(0,0,100))
-        
+
         CE = entity()
         Active = 0
         Eye = ang(vec(0,0,0))
         Speed = 0
         Mode = 0
-        
+
         cameraCreate(1)
-        
+
         holoCreate(1)
         holoMaterial(1,"models/wireframe")
-        holoVisible(1,players(),0)      
+        holoVisible(1,players(),0)
         holoVisible(1,O,1)
-        
+
         rangerDefaultZero(1)
     }
-    
-    function vector angle:toVector() {return vec(1,0,0):rotate(This)} 
-    
+
+    function vector angle:toVector() {return vec(1,0,0):rotate(This)}
+
     function printCE(){
         print(4,CE:name()+" {"+CE:health()+"|"+CE:armor()+"}")
     }
-    
-    init()    
-} 
+
+    init()
+}
 
 runOnTick(1)
 
@@ -52,7 +52,7 @@ Alt=O:keyWalk()
 
 if(M1&$M1&M2)
 {
-    Active=!Active   
+    Active=!Active
 }
 
 if (Active) {
@@ -73,14 +73,14 @@ if(!Mode)
 {
     Ranger=rangerOffset(10000000,Vec,Eye:toVector())
     CE=Ranger:entity()
-    
+
     #Num=round(Ranger:distance())
     Speed=10 + Shift*30 - Alt*5
-    
+
     cameraToggle(1,Active)
     cameraPos(1, Vec)
     cameraAng(1, Eye)
-    
+
     if(CE:isPlayer()){
         holoVisible(1,O,0)
         holoPos(1,CE:pos())
@@ -102,37 +102,37 @@ if(Mode)
     if($Active) {
         holoCreate(1)
         holoMaterial(1,"models/wireframe")
-        holoVisible(1,players(),0)      
+        holoVisible(1,players(),0)
         holoVisible(1,O,1)
     }
         findByClass("player")
         findExcludePlayer(O)
         Find=findToArray()
     }
-    
+
     if(!Active)
     {
         findIncludeEntities(players())
         Find:clear()
     }
-    
+
     if(Find:count())
     {
         CE=Find[Target,entity]
-        
+
         if($Mode!=0){Target-=$Mode}
-        
+
         if(Mode==1)
         {
             if (Active&Target&$Target) {
                 printCE()
             }
-            
+
             rangerFilter(CE)
             rangerFilter(CE:vehicle())
 
             Round=rangerOffset(120,CE:boxCenterW(),-Eye:toVector())
-        
+
             Vec=CE:boxCenterW() - Eye:toVector()*(Round:distance() - 20)
             cameraPos(1,CE:boxCenterW() - Eye:toVector()*(Round:distance() - 20))
             cameraAng(1,Eye)
@@ -145,7 +145,7 @@ if(Mode)
             if (Active&Target&$Target) {printCE()}
             holoAlpha(1,0)
         }
-        
+
         cameraToggle(1, Find:count())
 
         Target+=(W & $W & Target!=Find:count()) - (S & $S & Target!=1)
