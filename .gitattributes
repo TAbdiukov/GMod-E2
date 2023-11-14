@@ -1,2 +1,3 @@
-# E2 is essentially LUA so
-*.txt linguist-language=Lua
+# E2 be LUA
+*2/*.txt linguist-language=Lua
+*2/*/*.txt linguist-language=Lua
