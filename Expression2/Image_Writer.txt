@@ -1,12 +1,16 @@
 @name Image Writer
 @inputs DS:wirelink
 @outputs Percent Buf State:string
-@persist AI Retry Buffer RGB:vector
-@persist [E O]:entity [Ar]:array [Img URL_PHP Prefix S]:string [I Length]
-@persist [NEWLINE PROGRAM_NAME PROGRAM_NAME_SHORT]:string
+@persist AI Retry Buffer
+@persist [E O]:entity [Ar]:array [Img URL_PHP S]:string [I Length]
+@persist [PROGRAM_NAME_SHORT]:string
 @persist SPD
 @persist [LS LS1 LS2]:string
+#UNUSED
+#@persist PROGRAM_NAME:string RGB:vector X Fin
 #@model models/hunter/blocks/cube05x05x05.mdl
+
+
 
 #Revision 2
 #CHANGES
@@ -22,14 +26,17 @@ if(first())
 {
     runOnHTTP(1)
     runOnChat(1)
-    Prefix = "+"
+
     E = entity()
     O = owner()
-    URL_PHP = "https://cgi.cse.unsw.edu.au/~z5214048/image.php"
+    
+    Retry = 0
+    URL_PHP = "https://.../image.php"
     SPD = 2 #*100%
 
-    PROGRAM_NAME = "Image writer"
+    #PROGRAM_NAME = "Image writer"
     PROGRAM_NAME_SHORT = "Imgw"
+
 
     function printStd(Prefix:string, Msg:string)
     {
@@ -55,7 +62,7 @@ if(first())
 }
 
 Req = httpCanRequest()
-Fin = changed(Req)&Req
+#Fin = changed(Req)&Req
 
 if(chatClk(O)){
     LS = O:lastSaid()
@@ -127,7 +134,7 @@ if(clk("getImg") | Retry == 1) {
         stoptimer("getImg")
         httpRequest(URL)
         S = httpData()
-        X = S:find("x")
+        #X = S:find("x")
         #print(X)
         if(S) {
             Col = S:find(":")
