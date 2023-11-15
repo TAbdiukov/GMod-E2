@@ -6,7 +6,7 @@ My various E2 scripts.
 ##### AFK_Mass
 
 * <ins>**Brief**</ins>: Defeats anti-AFK system in an unconventional way. 
-* Usage:
+* <ins>**Usage**</ins>:
 	1. Spawn a hover vehicle
 	2. Place a E2 on it, and
 	3. Sit inside. 
@@ -18,7 +18,7 @@ My various E2 scripts.
 ##### Crazy Whiskey
 * <ins>**Brief**</ins>: Denies service of server's chat, weapon switch, console and other processes.  Finding the root cause of this DoS attack is very difficult.
 * <ins>**Scope**</ins>: In-game security research
-* Usage:
+* <ins>**Usage**</ins>:
 	1. Spawn a Wiremod entity that uses RAM for functioning, such as a console screen or a ZSPU.
 	2. Place a E2 right on it.
 	3. Discover the effects.
@@ -29,7 +29,7 @@ My various E2 scripts.
 
 	The name is inspired by [zergRush for Android 2.2/2.3](https://github.com/revolutionary/zergRush/blob/master/zergRush.c)
 * <ins>**Scope**</ins>: In-game security research
-* Usage:
+* <ins>**Usage**</ins>:
 	1. Place E2
 	2. Wait until E2 crashes. Do not delete the chip after the crash
 	3. Edit script slighly to halve the space block size
