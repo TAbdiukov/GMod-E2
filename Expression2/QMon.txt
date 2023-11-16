@@ -27,8 +27,9 @@ if(first())
         E=entity()
         O=owner()
 
-        concmd("wire_user_model models/jaanus/wiretool/wiretool_range.mdl")
+        concmd("wire_user_range 9000")
         if(duped()){entity():propDelete()}
+        concmd("wire_user_model models/jaanus/wiretool/wiretool_range.mdl")
 
         print(4,"Welcome to QMon v2")
         echo("0. Money printer CB1")
