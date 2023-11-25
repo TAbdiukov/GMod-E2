@@ -47,7 +47,7 @@ My various E2 scripts.
 * <ins>**Status**</ins>: OK, enhanced
 
 ##### QMon
-* <ins>**Brief**</ins>: Takes a non-delimited string (e.g. "9A"), and a Wiremod User wirelink, and then traverses the Wiremod User across requested entities while oscillating it's ON/OFF <ins>**Status**</ins>:, thus interacting with entities. Useful for RP (gain items), sandbox (press random buttons) or otherwise (opening and closing doors)
+* <ins>**Brief**</ins>: Takes a non-delimited string (e.g. "9A"), and a Wiremod User wirelink, and then traverses the Wiremod User across requested entities while oscillating it's power status, thus interacting with entities. Useful for RP (gain items), sandbox (press random buttons) or otherwise (opening and closing doors)
 * <ins>**Scope**</ins>: Troll, in-game security research
 * <ins>**Status**</ins>: OK
 
