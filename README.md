@@ -31,13 +31,13 @@ My various E2 scripts.
 
 ##### hoyo MIDI player v6
 * <ins>**Brief**</ins>: Plays online MIDI music on the server. 
-* Requires: `midi.php` and `mc.php`
+* <ins>**Requires**</ins>: `midi.php` and `mc.php`
 * <ins>**Scope**</ins>: IRL, sound, player
 * <ins>**Status**</ins>: OK (it try different switches for different songs, notably `SmoothSound`)
 
 ##### Image_Writer
 * <ins>**Brief**</ins>: Prints a real-world online image on a Wiremod Digital Screen. 
-* Requires: `image.php`
+* <ins>**Requires**</ins>: `image.php`
 * <ins>**Scope**</ins>: IRL, image-processing, player.
 * <ins>**Status**</ins>: OK 
 
