@@ -66,8 +66,70 @@ My various E2 scripts.
 * <ins>**Scope**</ins>: Troll, in-game security research
 * <ins>**Status**</ins>: OK
 
+## Satellite
+'Satellite' engine traverses the map. Satellite code that has multiple use-cases.
+##### Satellite CAM
+* <ins>**Brief**</ins>: Lets user (most likely owner) traverse the map using Wiremod Cam Controller.
+* <ins>**Requires**</ins>: Wiremod Cam Controller
+* <ins>**Usage**</ins>:
+	1. Place E2
+	2. Place Wiremod Cam Controller
+	3. Wire E2 to Cam Controller
+	4. Press mouse's LMB and RMB at the same time
+* <ins>**Scope**</ins>: Exploration
+* <ins>**Status**</ins>: OK
+
+##### Satellite EXT
+* <ins>**Brief**</ins>: Lets owner traverse the map, if Wiremod Extras are installed on the server.
+* <ins>**Requires**</ins>: Wiremod Extras installed on the server.
+* <ins>**Usage**</ins>:
+	1. Place E2
+	2. Press mouse's LMB and RMB at the same time
+* <ins>**Scope**</ins>: Exploration
+* <ins>**Status**</ins>: OK
+
+##### Satellite Seat NoClip
+* <ins>**Brief**</ins>: Lets a seat (chair or vehicle) driver traverse the map.
+* <ins>**Requires**</ins>: Default Wiremod permissions.
+* <ins>**Usage**</ins>:
+	1. Place any chair or vehicle.
+	2. Place E2 right on it, so E2 is constrained to a seat.
+	3. (Recommended) If available, use "NoCollide All" or "NoCollide World" tool on both E2 and seat
+	4. Use the seat
+* <ins>**Scope**</ins>: Exploration
+* <ins>**Status**</ins>: OK
+
+## E2P 
+E2P (Expression2Power) specific hazardous code. Unsupported by mainstream Expression2.
+* **`e2p_defender`** - Sends RPG missiles to target direction.
+* **`e2p_getcoolgear`** - Gives user cool gear
+* **`e2p_godmode`** - Freezes HP at 999
+* **`e2p_noclip`** - Keeps requesting NoClip from backend, until it is granted
+
+## RP
+Miscellaneous RP-related code
+* **`BuyHealth RP`** - Automatically buys health if the owner's health is below 100%. Useful for RP. Requires client concmd permissions.
+* **`Chat Spy`** - Prints all detected chat commands by players. Useful for RP and other environments where the chat is not global.
+* **`WhoKilled`** - If owner is killed, informs the owner who killed them and how. Useful for RP and other environments where the kill display is hidden.
+
 ## .old
 ##### E2 Proxy
 * <ins>**Brief**</ins>: A script from an **unfinished** project to passing HTTP data over the server's IP address. Frontend needs to be yet written
 * <ins>**Scope**</ins>: IRL, networking
 * <ins>**Status**</ins>: **Unfinished**. Frontend needs to be yet written.
+
+##### E2-DOS
+* <ins>**Brief**</ins>: Old implementation of CLI OS. Akin to Apple I in functionality and performance. Can work with different types of screens (Text Screen, Console Screen, EGP), takes Wire Keyboard input, can execute programs. However, the idea was conceived during early E2 days and the code suffers from lack of local variables (new addition to Expression2), lambdas, and general need for optimization.
+* <ins>**Scope**</ins>: IRL, computing
+* <ins>**Status**</ins>: **Unmaintained**. Code needs refactoring.
+
+##### hoyo's Midi Player original
+* <ins>**Brief**</ins>: Plays online MIDI music on the server. Original version has some problems.
+* <ins>**Scope**</ins>: IRL, player.
+* <ins>**Status**</ins>: **Unmaintained (old version)**
+
+##### Satellite Original
+* <ins>**Brief**</ins>: Original satellite-engine code.
+* <ins>**Requires**</ins>: Wiremod Pod Controller, Wiremod Cam Controller, Wiremod EGP.
+* <ins>**Scope**</ins>: Exploration
+* <ins>**Status**</ins>: **Unmaintained (old version)**

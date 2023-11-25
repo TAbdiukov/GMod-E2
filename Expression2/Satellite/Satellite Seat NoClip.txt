@@ -1,4 +1,4 @@
-@name Satellite Vehicle NoClip
+@name Satellite Seat NoClip
 @persist Active Vec:vector [E Seat Dvr]:entity
 @persist Speed W S Eye:angle
 # Unused

@@ -1,4 +1,4 @@
-@name BuyHealth
+@name BuyHealth RP
 
 interval(1)
 if (owner():health() < 100 & owner():health() > 0) {
