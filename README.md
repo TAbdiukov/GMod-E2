@@ -54,7 +54,7 @@ My various E2 scripts.
 #####  zergRush
 * <ins>**Brief**</ins>: Causes memory exhaustion within minutes. The code creates a memory leak makes server run out of RAM, causing it to crash when trying to allocate memory for critical operations. 
 
-	The name is inspired by [zergRush for Android 2.2/2.3](https://github.com/revolutionary/zergRush/blob/master/zergRush.c). [More about Zerg Rush in Ukraine](https://www.vice.com/en/article/5dgv7q/advisor-to-ukraines-president-says-russia-is-preparing-a-zerg-rush)
+	The name is inspired by [zergRush for Android 2.2/2.3](https://github.com/revolutionary/zergRush/blob/master/zergRush.c). [More about Zerg Rush in Ukraine](https://www.vice.com/en/article/5dgv7q/advisor-to-ukraines-president-says-russia-is-preparing-a-zerg-rush).
 * <ins>**Scope**</ins>: In-game security research
 * <ins>**Usage**</ins>:
 	1. Place E2
