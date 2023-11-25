@@ -24,20 +24,6 @@ My various E2 scripts.
 	3. Discover the effects.
 * <ins>**Status**</ins>: OK (YMMV with different generated values and devices)
 
-#####  Drunkenzerg
-* <ins>**Brief**</ins>: Causes memory exhaustion within minutes. The code creates a memory leak makes server run out of RAM, causing it to crash when trying to allocate memory for critical operations. 
-
-	The name is inspired by [zergRush for Android 2.2/2.3](https://github.com/revolutionary/zergRush/blob/master/zergRush.c). [More about Zerg Rush in Ukraine](https://www.vice.com/en/article/5dgv7q/advisor-to-ukraines-president-says-russia-is-preparing-a-zerg-rush)
-* <ins>**Scope**</ins>: In-game security research
-* <ins>**Usage**</ins>:
-	1. Place E2
-	2. Wait until E2 crashes. Do not delete the chip after the crash
-	3. Edit script slighly to halve the space block size
-	4. Place another E2 again. Potentially let it crash, too
-	5. Do NOT delete anything, simply wait another 10-30 seconds
-	6. Done!
-* <ins>**Status**</ins>: OK (YMMV with different server computing powers)
-
 ##### Fake Moneyprinter
 * <ins>**Brief**</ins>: A simple, customizable: fake moneyprinter for DarkRP.
 * <ins>**Scope**</ins>: Humor
@@ -64,6 +50,20 @@ My various E2 scripts.
 * <ins>**Brief**</ins>: Takes a non-delimited string (e.g. "9A"), and a Wiremod User wirelink, and then traverses the Wiremod User across requested entities while oscillating it's ON/OFF <ins>**Status**</ins>:, thus interacting with entities. Useful for RP (gain items), sandbox (press random buttons) or otherwise (opening and closing doors)
 * <ins>**Scope**</ins>: Troll, in-game security research
 * <ins>**Status**</ins>: OK
+
+#####  zergRush
+* <ins>**Brief**</ins>: Causes memory exhaustion within minutes. The code creates a memory leak makes server run out of RAM, causing it to crash when trying to allocate memory for critical operations. 
+
+	The name is inspired by [zergRush for Android 2.2/2.3](https://github.com/revolutionary/zergRush/blob/master/zergRush.c). [More about Zerg Rush in Ukraine](https://www.vice.com/en/article/5dgv7q/advisor-to-ukraines-president-says-russia-is-preparing-a-zerg-rush)
+* <ins>**Scope**</ins>: In-game security research
+* <ins>**Usage**</ins>:
+	1. Place E2
+	2. Wait until E2 crashes. Do not delete the chip after the crash
+	3. Edit script slighly to halve the space block size
+	4. Place another E2 again. Potentially let it crash, too
+	5. Do NOT delete anything, simply wait another 10-30 seconds
+	6. Done!
+* <ins>**Status**</ins>: OK (YMMV with different server computing powers)
 
 ## Satellite
 'Satellite' engine traverses the map. Satellite code that has multiple use-cases.
