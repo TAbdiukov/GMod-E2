@@ -1,4 +1,4 @@
-@name Drunkenzerg
+@name zergRush
 @inputs 
 @outputs L N RAM_MB SLen
 @persist A:array S:string L EXP MUL_MB

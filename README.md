@@ -27,7 +27,7 @@ My various E2 scripts.
 #####  Drunkenzerg
 * <ins>**Brief**</ins>: Causes memory exhaustion within minutes. The code creates a memory leak makes server run out of RAM, causing it to crash when trying to allocate memory for critical operations. 
 
-	The name is inspired by [zergRush for Android 2.2/2.3](https://github.com/revolutionary/zergRush/blob/master/zergRush.c)
+	The name is inspired by [zergRush for Android 2.2/2.3](https://github.com/revolutionary/zergRush/blob/master/zergRush.c). [More about Zerg Rush in Ukraine](https://www.vice.com/en/article/5dgv7q/advisor-to-ukraines-president-says-russia-is-preparing-a-zerg-rush)
 * <ins>**Scope**</ins>: In-game security research
 * <ins>**Usage**</ins>:
 	1. Place E2
@@ -37,7 +37,6 @@ My various E2 scripts.
 	5. Do NOT delete anything, simply wait another 10-30 seconds
 	6. Done!
 * <ins>**Status**</ins>: OK (YMMV with different server computing powers)
-
 
 ##### Fake Moneyprinter
 * <ins>**Brief**</ins>: A simple, customizable: fake moneyprinter for DarkRP.
