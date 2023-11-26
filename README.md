@@ -8,7 +8,7 @@ My various E2 scripts.
 * <ins>**Brief**</ins>: Defeats anti-AFK system in an unconventional way. 
 * <ins>**Usage**</ins>:
 	1. Spawn a hover vehicle.
-	2. Place a E2 on it, and
+	2. Place an E2 on it, and
 	3. Sit inside. 
 
 	The vehicle will twitch slightly, letting the player to take a break.
@@ -20,7 +20,7 @@ My various E2 scripts.
 * <ins>**Scope**</ins>: In-game security research
 * <ins>**Usage**</ins>:
 	1. Spawn a Wiremod entity that uses RAM for functioning, such as a console screen or a ZSPU.
-	2. Place a E2 right on it.
+	2. Place an E2 right on it.
 	3. Discover the effects.
 * <ins>**Status**</ins>: OK (YMMV with different generated values and devices)
 
@@ -100,16 +100,16 @@ My various E2 scripts.
 
 ## E2P 
 E2P (Expression2Power) specific hazardous code. Unsupported by mainstream Expression2.
-* **`e2p_defender`** - Sends RPG missiles to target direction.
-* **`e2p_getcoolgear`** - Gives user cool gear.
-* **`e2p_godmode`** - Freezes HP at 999.
-* **`e2p_noclip`** - Keeps requesting NoClip from backend, until it is granted.
+* **`e2p_defender`** – Sends RPG missiles to target direction.
+* **`e2p_getcoolgear`** – Gives user cool gear.
+* **`e2p_godmode`** – Freezes HP at 999.
+* **`e2p_noclip`** – Keeps requesting NoClip from backend, until it is granted.
 
 ## RP
 Miscellaneous RP-related code.
-* **`BuyHealth RP`** - Automatically buys health if the owner's health is below 100%. Useful for RP. Requires client concmd permissions.
-* **`Chat Spy`** - Prints all detected chat commands by players. Useful for RP and other environments where the chat is not global.
-* **`WhoKilled`** - If owner is killed, informs the owner who killed them and how. Useful for RP and other environments where the kill display is hidden.
+* **`BuyHealth RP`** – Automatically buys health if the owner's health is below 100%. Useful for RP. Requires client concmd permissions.
+* **`Chat Spy`** – Prints all detected chat commands by players. Useful for RP and other environments where the chat is not global.
+* **`WhoKilled`** – If owner is killed, informs the owner who killed them and how. Useful for RP and other environments where the kill display is hidden.
 
 ## .old
 ##### E2 Proxy
