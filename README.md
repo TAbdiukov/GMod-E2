@@ -122,7 +122,7 @@ Miscellaneous RP-related code.
 * <ins>**Scope**</ins>: IRL, computing
 * <ins>**Status**</ins>: **Unmaintained**. Code needs refactoring.
 
-##### hoyo's MIDI Player original
+##### hoyo's MIDI Player Original
 * <ins>**Brief**</ins>: Plays online MIDI music on the server. Original version has some problems.
 * <ins>**Scope**</ins>: IRL, player.
 * <ins>**Status**</ins>: **Unmaintained (old version)**
