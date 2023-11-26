@@ -7,7 +7,7 @@ My various E2 scripts.
 
 * <ins>**Brief**</ins>: Defeats anti-AFK system in an unconventional way. 
 * <ins>**Usage**</ins>:
-	1. Spawn a hover vehicle
+	1. Spawn a hover vehicle.
 	2. Place a E2 on it, and
 	3. Sit inside. 
 
