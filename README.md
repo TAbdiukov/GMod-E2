@@ -1,8 +1,9 @@
 # GMod-E2
 My various E2 scripts.
 
-# Scripts
-## Main
+## Scripts
+
+### Main
 ##### [AFK Mass](/Expression2/AFK_Mass.txt)
 
 * **Brief**: Defeats anti-AFK system in an unconventional way.
@@ -70,7 +71,7 @@ My various E2 scripts.
 	6. Done!
 * **Status**: OK (YMMV with different server computing powers)
 
-## [Satellite](/Expression2/Satellite)
+### [Satellite](/Expression2/Satellite)
 'Satellite' engine traverses the map. Satellite code that has multiple use-cases.
 ##### [Satellite CAM](/Expression2/Satellite/Satellite_CAM.txt)
 * **Brief**: Lets user (most likely owner) traverse the map using Wiremod Cam Controller.
@@ -103,20 +104,20 @@ My various E2 scripts.
 * **Scope**: Exploration
 * **Status**: OK
 
-## [E2P](/Expression2/E2P)
+### [E2P](/Expression2/E2P)
 Expression2Power (E2P) specific hazardous code. Unsupported by mainstream Expression2.
 * **[e2p_defender](/Expression2/E2P/e2p_defender.txt)** – Sends RPG missiles to target direction.
 * **[e2p_getcoolgear](/Expression2/E2P/e2p_getcoolgear.txt)** – Gives user cool gear.
 * **[e2p_godmode](/Expression2/E2P/e2p_godmode.txt)** – Freezes HP at 999.
 * **[e2p_noclip](/Expression2/E2P/e2p_noclip.txt)** – Keeps requesting NoClip from backend, until it is granted.
 
-## [RP](/Expression2/RP)
+### [RP](/Expression2/RP)
 Miscellaneous RP-related code.
 * **[BuyHealth RP](/Expression2/RP/buyhealth.txt)** – Automatically buys health if the owner's health is below 100%. Useful for RP. Requires client concmd permissions.
 * **[Chat Spy](/Expression2/RP/chat_spy.txt)** – Prints all detected chat commands by players. Useful for RP and other environments where the chat is not global.
 * **[WhoKilled](/Expression2/RP/WhoKilled.txt)** – If owner is killed, informs the owner who killed them and how. Useful for RP and other environments where the kill display is hidden.
 
-## [.old](/Expression2/.old)
+### [.old](/Expression2/.old)
 ##### [E2 Proxy old](/Expression2/.old/E2_Proxy_old.txt)
 * **Brief**: A script from an **unfinished** project to passing HTTP data over the server's IP address. Frontend needs yet to be written.
 * **Scope**: IRL, networking
