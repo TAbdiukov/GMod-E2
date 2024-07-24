@@ -5,18 +5,18 @@ My various E2 scripts.
 ## Main
 ##### [AFK Mass](/Expression2/AFK_Mass.txt)
 
-* **Brief**: Defeats anti-AFK system in an unconventional way. 
+* **Brief**: Defeats anti-AFK system in an unconventional way.
 * **Usage**:
 	1. Spawn a hover vehicle.
 	2. Place an E2 on it, and
-	3. Sit inside. 
+	3. Sit inside.
 
 	The vehicle will twitch slightly, letting the player to take a break.
 * **Scope**: Convenience, automation, installation.
-* **Status**: OK 
+* **Status**: OK
 
 ##### [Crazy Whiskey](/Expression2/Crazy_Whiskey.txt)
-* **Brief**: Denies service of server's chat, weapon switch, console, and other processes.  Finding the root cause of this DoS attack is very difficult.
+* **Brief**: Denies service of server's chat, weapon switch, console, and other processes. Finding the root cause of this DoS attack is very difficult.
 * **Scope**: In-game security research
 * **Usage**:
 	1. Spawn a Wiremod entity that uses RAM for functioning, such as a console screen or a ZSPU.
@@ -30,16 +30,16 @@ My various E2 scripts.
 * **Status**: OK (usefulness is limited by Expression2 limitations)
 
 ##### [Hoyo MIDI player v6](/Expression2/Hoyo_Midi_Player_V6.txt)
-* **Brief**: Plays online MIDI music on the server. 
+* **Brief**: Plays online MIDI music on the server.
 * **Requires**: `midi.php` and `mc.php`
 * **Scope**: IRL, sound, player
 * **Status**: OK (it try different switches for different songs, notably `SmoothSound`)
 
 ##### [Image Writer](/Expression2/Image_Writer.txt)
-* **Brief**: Prints a real-world online image on a Wiremod Digital Screen. 
+* **Brief**: Prints a real-world online image on a Wiremod Digital Screen.
 * **Requires**: `image.php`
 * **Scope**: IRL, image-processing, player.
-* **Status**: OK 
+* **Status**: OK
 
 ##### [Mario Underwater Theme](/Expression2/Mario_Underwater_Theme.txt)
 * **Brief**: Ported from ZSPU, the code plays *full* Super Mario Bros Underwater theme.
@@ -47,7 +47,7 @@ My various E2 scripts.
 * **Status**: OK, enhanced
 
 ##### [StagesDemo-strcpy](/Expression2/StagesDemo-strcpy.txt)
-* **Brief**: Demo of Stage-based programming (state computing) to enable 512MB+ string copy as well as additional operations if needed. 
+* **Brief**: Demo of Stage-based programming (state computing) to enable 512MB+ string copy as well as additional operations if needed.
 * **Scope**: IRL, performance, demo.
 * **Status**: OK
 
@@ -57,7 +57,7 @@ My various E2 scripts.
 * **Status**: OK
 
 ##### [ZergRush](/Expression2/ZergRush.txt)
-* **Brief**: Causes memory exhaustion within minutes. The code creates a memory leak makes server run out of RAM, causing it to crash when trying to allocate memory for critical operations. 
+* **Brief**: Causes memory exhaustion within minutes. The code creates a memory leak makes server run out of RAM, causing it to crash when trying to allocate memory for critical operations.
 
 	The name is inspired by [zergRush for Android 2.2/2.3](https://github.com/revolutionary/zergRush/blob/master/zergRush.c).
 * **Scope**: In-game security research
@@ -103,7 +103,7 @@ My various E2 scripts.
 * **Scope**: Exploration
 * **Status**: OK
 
-## [E2P](/Expression2/E2P) 
+## [E2P](/Expression2/E2P)
 Expression2Power (E2P) specific hazardous code. Unsupported by mainstream Expression2.
 * **[e2p_defender](/Expression2/E2P/e2p_defender.txt)** – Sends RPG missiles to target direction.
 * **[e2p_getcoolgear](/Expression2/E2P/e2p_getcoolgear.txt)** – Gives user cool gear.
