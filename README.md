@@ -72,7 +72,7 @@ My various E2 scripts.
 
 ## [Satellite](/Expression2/Satellite)
 'Satellite' engine traverses the map. Satellite code that has multiple use-cases.
-##### [Satellite CAM](/Expression2/Satellite/Satellite%20CAM.txt)
+##### [Satellite CAM](/Expression2/Satellite/Satellite_CAM.txt)
 * **Brief**: Lets user (most likely owner) traverse the map using Wiremod Cam Controller.
 * **Requires**: Wiremod Cam Controller
 * **Usage**:
@@ -83,7 +83,7 @@ My various E2 scripts.
 * **Scope**: Exploration
 * **Status**: OK
 
-##### [Satellite EXT](/Expression2/Satellite/Satellite%20EXT.txt)
+##### [Satellite EXT](/Expression2/Satellite/Satellite_EXT.txt)
 * **Brief**: Lets owner traverse the map, if Wiremod Extras are installed on the server.
 * **Requires**: Wiremod Extras installed on the server.
 * **Usage**:
@@ -92,7 +92,7 @@ My various E2 scripts.
 * **Scope**: Exploration
 * **Status**: OK
 
-##### [Satellite Seat NoClip](/Expression2/Satellite/Satellite%20Seat%20NoClip.txt)
+##### [Satellite Seat NoClip](/Expression2/Satellite/Satellite_Seat_NoClip.txt)
 * **Brief**: Lets a seat (chair or vehicle) driver traverse the map.
 * **Requires**: Default Wiremod permissions.
 * **Usage**:
@@ -104,17 +104,17 @@ My various E2 scripts.
 * **Status**: OK
 
 ## [E2P](/Expression2/E2P) 
-E2P (Expression2Power) specific hazardous code. Unsupported by mainstream Expression2.
-* **`e2p_defender`** – Sends RPG missiles to target direction.
-* **`e2p_getcoolgear`** – Gives user cool gear.
-* **`e2p_godmode`** – Freezes HP at 999.
-* **`e2p_noclip`** – Keeps requesting NoClip from backend, until it is granted.
+Expression2Power (E2P) specific hazardous code. Unsupported by mainstream Expression2.
+* **[e2p_defender](/Expression2/E2P/e2p_defender.txt)** – Sends RPG missiles to target direction.
+* **[e2p_getcoolgear](/Expression2/E2P/e2p_getcoolgear.txt)** – Gives user cool gear.
+* **[e2p_godmode](/Expression2/E2P/e2p_godmode.txt)** – Freezes HP at 999.
+* **[e2p_noclip](/Expression2/E2P/e2p_noclip.txt)** – Keeps requesting NoClip from backend, until it is granted.
 
 ## [RP](/Expression2/RP)
 Miscellaneous RP-related code.
-* **`BuyHealth RP`** – Automatically buys health if the owner's health is below 100%. Useful for RP. Requires client concmd permissions.
-* **`Chat Spy`** – Prints all detected chat commands by players. Useful for RP and other environments where the chat is not global.
-* **`WhoKilled`** – If owner is killed, informs the owner who killed them and how. Useful for RP and other environments where the kill display is hidden.
+* **[BuyHealth RP](/Expression2/RP/buyhealth.txt)** – Automatically buys health if the owner's health is below 100%. Useful for RP. Requires client concmd permissions.
+* **[Chat Spy](/Expression2/RP/chat_spy.txt)** – Prints all detected chat commands by players. Useful for RP and other environments where the chat is not global.
+* **[WhoKilled](/Expression2/RP/WhoKilled.txt)** – If owner is killed, informs the owner who killed them and how. Useful for RP and other environments where the kill display is hidden.
 
 ## [.old](/Expression2/.old)
 ##### [E2 Proxy old](/Expression2/.old/E2_Proxy_old.txt)
@@ -132,7 +132,7 @@ Miscellaneous RP-related code.
 * **Scope**: IRL, player.
 * **Status**: **Superseded (old version)**
 
-##### [Satellite Original](/Expression2/.old/Satellite%20Original.txt)
+##### [Satellite Original](/Expression2/.old/Satellite_Original.txt)
 * **Brief**: Original satellite-engine code.
 * **Requires**: Wiremod Pod Controller, Wiremod Cam Controller, Wiremod EGP.
 * **Scope**: Exploration
