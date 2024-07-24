@@ -1,5 +1,5 @@
 # GMod-E2
-My various E2 scripts.
+My various Expression2 scripts.
 
 ## Scripts
 
