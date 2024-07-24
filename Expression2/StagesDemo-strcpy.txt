@@ -1,0 +1,86 @@
+@name StagesDemo-strcpy
+@inputs
+@outputs Stage
+@persist [S1 S2]:string S1_Len String_Buffer_Count
+@persist STRING_BUFFER_SIZE STRING_SIMPLE_COPY_THRESHOLD Stage StringArray:array
+@persist LongStringK LongStringArray:array
+@trigger
+@strict
+
+runOnTick(1)
+
+if(perf())
+{
+    if(first())
+    {
+        STRING_BUFFER_SIZE = 2^18
+        STRING_SIMPLE_COPY_THRESHOLD = 2^18
+    
+        S1 = "After this client and server with communicate with each other through proxy. Proxy has to just transfer data from client socket to server socket and vice versa. Client and server will exchange certificate information for handshaking, once handshaking is done they will start sharing data in encrypted format so proxy will not be able to understand anything!"
+        S1_Len = S1:length()
+
+        S2 = ""
+        String_Buffer_Count = 0
+        StringArray = array()
+
+        # Stages available:
+        # Stage 1 - generate and copy a very long string, do a simple-copy check for short strings
+        # Stage 2 - generate and copy a shorter string, do a simple-copy check for short strings
+        # Stage 3 - generate and copy a very short string, do a simple-copy check for short strings
+        # Stage 4 - copy over a very short strig without a simple-copy check for short strings
+        Stage = 1
+        
+        LongStringK = 0
+        LongStringArray = array()
+    }
+
+    switch(Stage)
+    {
+        case 1,
+            S1 = S1:repeat(2^12)
+            Stage += 1
+            break
+        case 2,
+             while(perf() & LongStringK < 128)
+            {
+                    LongStringArray:pushString(S1)
+                    LongStringK += 1
+            }
+            if(LongStringK == 128)
+            {
+                S1 = LongStringArray:concat("")
+                S1_Len = S1:length()
+                Stage += 1
+            }
+            break
+        case 3,
+            # If source string length is shorter than STRING_SIMPLE_COPY_THRESHOLD,
+            # then just copy string over
+            if(S1_Len < STRING_SIMPLE_COPY_THRESHOLD)
+            {
+                S2 = S1
+                # add to Stage
+                Stage += 2
+            }
+
+            Stage += 1
+            break
+        case 4,
+            StringArray:pushString(S1:sub(String_Buffer_Count+1, min(String_Buffer_Count + STRING_BUFFER_SIZE, S1_Len)))
+            #print(S1:sub(String_Buffer_Count+1, min(String_Buffer_Count + STRING_BUFFER_SIZE, S1_Len)))
+            String_Buffer_Count += STRING_BUFFER_SIZE
+            if(String_Buffer_Count >= S1_Len)
+            {
+                Stage += 1
+            }
+            break
+        case 5,
+            S2 = StringArray:concat("")
+            Stage += 1
+            break
+        case 6,
+            print("Finish! S2 length: "+(S2:length()/1024):toString()+"Kb / Array: "+StringArray:count():toString()+" / last part: "+S2:right(20))
+            assert(0)
+            break
+    }
+}

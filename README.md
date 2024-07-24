@@ -3,7 +3,7 @@ My various E2 scripts.
 
 # Scripts
 ## Main
-##### AFK_Mass
+##### [AFK_Mass](/Expression2/AFK_Mass.txt)
 
 * <ins>**Brief**</ins>: Defeats anti-AFK system in an unconventional way. 
 * <ins>**Usage**</ins>:
@@ -45,6 +45,12 @@ My various E2 scripts.
 * <ins>**Brief**</ins>: Ported from ZSPU, the code plays *full* Super Mario Bros Underwater theme.
 * <ins>**Scope**</ins>: IRL, player.
 * <ins>**Status**</ins>: OK, enhanced
+
+##### StagesDemo-strcpy
+* <ins>**Brief**</ins>: Demo of Stage-based programming (state computing) to enable 512MB+ string copy as well as additional operations if needed. 
+* <ins>**Scope**</ins>: IRL, performance, demo.
+* <ins>**Status**</ins>: OK
+
 
 ##### QMon
 * <ins>**Brief**</ins>: Takes a non-delimited string (e.g. "9A"), and a Wiremod User wirelink, and then traverses the Wiremod User across requested entities while oscillating it's power status, thus interacting with entities. Useful for RP (gain items), sandbox (press random buttons) or otherwise (opening and closing doors)
