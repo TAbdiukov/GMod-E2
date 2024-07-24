@@ -3,7 +3,7 @@ My various E2 scripts.
 
 # Scripts
 ## Main
-##### [AFK_Mass](/Expression2/AFK_Mass.txt)
+##### [AFK Mass](/Expression2/AFK_Mass.txt)
 
 * <ins>**Brief**</ins>: Defeats anti-AFK system in an unconventional way. 
 * <ins>**Usage**</ins>:
@@ -72,7 +72,7 @@ My various E2 scripts.
 
 ## [Satellite](/Expression2/Satellite)
 'Satellite' engine traverses the map. Satellite code that has multiple use-cases.
-##### [Satellite CAM](/Expression2/Satellite/Satellite CAM.txt)
+##### [Satellite CAM](/Expression2/Satellite/Satellite%20CAM.txt)
 * <ins>**Brief**</ins>: Lets user (most likely owner) traverse the map using Wiremod Cam Controller.
 * <ins>**Requires**</ins>: Wiremod Cam Controller
 * <ins>**Usage**</ins>:
@@ -83,7 +83,7 @@ My various E2 scripts.
 * <ins>**Scope**</ins>: Exploration
 * <ins>**Status**</ins>: OK
 
-##### [Satellite EXT](/Expression2/Satellite/Satellite EXT.txt)
+##### [Satellite EXT](/Expression2/Satellite/Satellite%20EXT.txt)
 * <ins>**Brief**</ins>: Lets owner traverse the map, if Wiremod Extras are installed on the server.
 * <ins>**Requires**</ins>: Wiremod Extras installed on the server.
 * <ins>**Usage**</ins>:
@@ -92,7 +92,7 @@ My various E2 scripts.
 * <ins>**Scope**</ins>: Exploration
 * <ins>**Status**</ins>: OK
 
-##### [Satellite Seat NoClip](/Expression2/Satellite/Satellite Seat NoClip.txt)
+##### [Satellite Seat NoClip](/Expression2/Satellite/Satellite%20Seat%20NoClip.txt)
 * <ins>**Brief**</ins>: Lets a seat (chair or vehicle) driver traverse the map.
 * <ins>**Requires**</ins>: Default Wiremod permissions.
 * <ins>**Usage**</ins>:
@@ -132,7 +132,7 @@ Miscellaneous RP-related code.
 * <ins>**Scope**</ins>: IRL, player.
 * <ins>**Status**</ins>: **Superseded (old version)**
 
-##### [Satellite Original](/Expression2/.old/Satellite Original.txt)
+##### [Satellite Original](/Expression2/.old/Satellite%20Original.txt)
 * <ins>**Brief**</ins>: Original satellite-engine code.
 * <ins>**Requires**</ins>: Wiremod Pod Controller, Wiremod Cam Controller, Wiremod EGP.
 * <ins>**Scope**</ins>: Exploration
