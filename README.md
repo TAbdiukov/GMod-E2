@@ -32,13 +32,13 @@ My various Expression2 scripts.
 
 ##### [Hoyo MIDI player v6](/Expression2/Hoyo_Midi_Player_V6.txt)
 * **Brief**: Plays online MIDI music on the server.
-* **Requires**: `midi.php` and `mc.php`
+* **Requires**: hosted, used by a PHP engine [PHP scripts](/PHP_scripts) of `midi.php` and `mc.php`
 * **Scope**: IRL, sound, player
 * **Status**: OK (it try different switches for different songs, notably `SmoothSound`)
 
 ##### [Image Writer](/Expression2/Image_Writer.txt)
 * **Brief**: Prints a real-world online image on a Wiremod Digital Screen.
-* **Requires**: `image.php`
+* **Requires**: hosted, used by a PHP engine [PHP scripts](/PHP_scripts) `image.php`
 * **Scope**: IRL, image-processing, player.
 * **Status**: OK
 

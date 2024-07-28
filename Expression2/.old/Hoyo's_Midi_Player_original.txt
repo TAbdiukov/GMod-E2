@@ -16,14 +16,8 @@ interval(10)
 
 if(first() | duped() | dupefinished())
 {
-
-
     #end
-    URL = "http://darkcookies.ueuo.com/midi.php"
-
-    #URL = "http://freetestphp1.comuv.com/midi.php"
-    #URL = "http://hoyo321.iptime.org/midi.php"
-    #URL = "http://yandex.ru"
+    URL = "http://.../midi.php"
 
     function soundPlayM(Channel, SoundPath:string){
         soundPlay(Channel,soundDuration(SoundPath),SoundPath)
