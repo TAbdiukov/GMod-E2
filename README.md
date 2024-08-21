@@ -12,7 +12,7 @@ My various Expression2 scripts.
 	2. Place an E2 on it, and
 	3. Sit inside.
 
-	The vehicle will twitch slightly, letting the player to take a break.
+	The vehicle will twitch slightly, letting the player take a break.
 * **Scope**: Convenience, automation, installation.
 * **Status**: OK
 
@@ -26,7 +26,7 @@ My various Expression2 scripts.
 * **Status**: OK (YMMV with different generated values and devices)
 
 ##### [Fake Moneyprinter](/Expression2/Fake_Moneyprinter.txt)
-* **Brief**: A simple, customizable: fake moneyprinter for DarkRP.
+* **Brief**: A simple, customizable: fake money printer for DarkRP.
 * **Scope**: Humor
 * **Status**: OK (usefulness is limited by Expression2 limitations)
 
@@ -34,7 +34,7 @@ My various Expression2 scripts.
 * **Brief**: Plays online MIDI music on the server.
 * **Requires**: hosted, used by a PHP engine [PHP scripts](/PHP_scripts) of `midi.php` and `mc.php`
 * **Scope**: IRL, sound, player
-* **Status**: OK (it try different switches for different songs, notably `SmoothSound`)
+* **Status**: OK (try different switches for different songs, notably `SmoothSound`)
 
 ##### [Image Writer](/Expression2/Image_Writer.txt)
 * **Brief**: Prints a real-world online image on a Wiremod Digital Screen.
@@ -53,12 +53,12 @@ My various Expression2 scripts.
 * **Status**: OK
 
 ##### [QMon](/Expression2/QMon.txt)
-* **Brief**: Takes a non-delimited string (e.g. "9A"), and a Wiremod User wirelink, and then traverses the Wiremod User across requested entities while oscillating it's power status, thus interacting with entities. Useful for RP (gain items), sandbox (press random buttons) or otherwise (opening and closing doors)
+* **Brief**: Takes a non-delimited string (such as "9A"), and a Wiremod User wirelink, and then traverses the Wiremod User across requested entities while oscillating its power status, thus interacting with entities. Useful for RP (gain items), sandbox (press random buttons) or otherwise (opening and closing doors)
 * **Scope**: Troll, in-game security research
 * **Status**: OK
 
 ##### [ZergRush](/Expression2/ZergRush.txt)
-* **Brief**: Causes memory exhaustion within minutes. The code creates a memory leak makes server run out of RAM, causing it to crash when trying to allocate memory for critical operations.
+* **Brief**: Causes memory exhaustion within minutes. The code creates a memory the leak that makes server run out of RAM, causing it to crash when trying to allocate memory for critical operations.
 
 	The name is inspired by [zergRush for Android 2.2/2.3](https://github.com/revolutionary/zergRush/blob/master/zergRush.c).
 * **Scope**: In-game security research
@@ -74,7 +74,7 @@ My various Expression2 scripts.
 ### [Satellite](/Expression2/Satellite)
 'Satellite' engine traverses the map. Satellite code that has multiple use-cases.
 ##### [Satellite CAM](/Expression2/Satellite/Satellite_CAM.txt)
-* **Brief**: Lets user (most likely owner) traverse the map using Wiremod Cam Controller.
+* **Brief**: Lets a user (most likely the owner) traverse the map using Wiremod Cam Controller.
 * **Requires**: Wiremod Cam Controller
 * **Usage**:
 	1. Place E2.
@@ -85,7 +85,7 @@ My various Expression2 scripts.
 * **Status**: OK
 
 ##### [Satellite EXT](/Expression2/Satellite/Satellite_EXT.txt)
-* **Brief**: Lets owner traverse the map, if Wiremod Extras are installed on the server.
+* **Brief**: Lets the owner traverse the map, if Wiremod Extras are installed on the server.
 * **Requires**: Wiremod Extras installed on the server.
 * **Usage**:
 	1. Place E2.
@@ -114,22 +114,22 @@ Expression2Power (E2P) specific hazardous code. Unsupported by mainstream Expres
 ### [RP](/Expression2/RP)
 Miscellaneous RP-related code.
 * **[BuyHealth RP](/Expression2/RP/buyhealth.txt)** – Automatically buys health if the owner's health is below 100%. Useful for RP. Requires client concmd permissions.
-* **[Chat Spy](/Expression2/RP/chat_spy.txt)** – Prints all detected chat commands by players. Useful for RP and other environments where the chat is not global.
+* **[Chat Spy](/Expression2/RP/chat_spy.txt)** – Prints all detected chat commands by players. Useful for RP and other environments where chat is not global.
 * **[WhoKilled](/Expression2/RP/WhoKilled.txt)** – If owner is killed, informs the owner who killed them and how. Useful for RP and other environments where the kill display is hidden.
 
 ### [.old](/Expression2/.old)
 ##### [E2 Proxy old](/Expression2/.old/E2_Proxy_old.txt)
-* **Brief**: A script from an **unfinished** project to passing HTTP data over the server's IP address. Frontend needs yet to be written.
+* **Brief**: A script from an **unfinished** project to pass HTTP data over the server's IP address. Frontend needs yet to be written.
 * **Scope**: IRL, networking
-* **Status**: **Unfinished**. Frontend needs to be yet written.
+* **Status**: **Unfinished**. Frontend needs to be written.
 
 ##### [E2-DOS](/Expression2/.old/E2-DOS.txt)
-* **Brief**: Old implementation of CLI OS. Akin to Apple I in functionality and performance. Can work with different types of screens (Text Screen, Console Screen, EGP), takes Wire Keyboard input, can execute programs. However, the idea was conceived during early E2 days, and the code suffers from lack of local variables (new addition to Expression2), lambdas, and general need for optimization.
+* **Brief**: Old implementation of CLI OS. Akin to Apple I in functionality and performance. Can work with diverse types of screens (Text Screen, Console Screen, EGP), takes Wire Keyboard input, can execute programs. However, the idea was conceived during early E2 days, and the code suffers from lack of local variables (new addition to Expression2), lambdas, and general need for optimization.
 * **Scope**: IRL, computing
 * **Status**: **Unmaintained**. Code needs refactoring.
 
 ##### [Hoyo's MIDI Player Original](/Expression2/.old/Hoyo's_Midi_Player_original.txt)
-* **Brief**: Plays online MIDI music on the server. Original version has some problems.
+* **Brief**: Plays online MIDI music on the server. The original version has some problems.
 * **Scope**: IRL, player.
 * **Status**: **Superseded (old version)**
 
