@@ -47,6 +47,20 @@ My various Expression2 scripts.
 * **Scope**: IRL, player.
 * **Status**: OK, enhanced
 
+##### [Physgun via Grabber](/Expression2/Physgun_via_Grabber.txt)
+* **Brief**: Allows the player to use Wiremod Grabber as a physgun, and unlike traditional physgun, allow the player to grab **other players' props and entities which were not frozen**. Uses a holographic laser to visualize the grab.
+* **Requires**: Wiremod Grabber
+* **Controls**: 
+	```
+	Walk (Walk key) → Activates the grab sequence when aiming at an entity with the Physgun.
+	Sprint (Shift key) → Modifies rotation mode while moving an object.
+	Reload (R key) → Resets the chip and releases the grabbed entity.
+	Primary Attack (Left Click) → Moves the object forward.
+	Secondary Attack (Right Click) → Moves the object backward.
+	```
+* **Scope**: player, props, entities.
+* **Status**: OK, takes some getting used to, after which it becomes a useful tool.
+
 ##### [StagesDemo-strcpy](/Expression2/StagesDemo-strcpy.txt)
 * **Brief**: Demo of Stage-based programming (state computing) to enable 512MB+ string copy as well as additional operations if needed.
 * **Scope**: IRL, performance, demo.

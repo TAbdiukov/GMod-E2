@@ -1,0 +1,217 @@
+@name Physgun via Grabber
+@inputs Grabber:wirelink
+@outputs T
+@persist [CheckIfGrabber ShowLaser PublicLaser]
+@persist [FT W S Ch Dist Speed Walk]
+@persist [Frz Act Active Con R On EL PG Shift Roll]
+@persist [Aang Pang Rang Diff Eye]:angle
+@persist [LE G O TE]:entity [OP Vec Difr RV]:vector
+
+if(first()){
+
+function vector angle:toVector() {return vec(1,0,0):rotate(This)}
+
+function rs(){
+    T=0
+    Ch=0
+    On=0
+    Act=0
+    Active=0
+    
+    holoVisible(1,players(),0)
+    holoVisible(2,players(),0)
+    
+    if(Con){
+        G:setAlpha(0)
+    }
+}
+
+function vector entity:tpos(){
+    if(This:massCenter()!=vec(0,0,0)){
+        return This:massCenter()
+    } elseif(This:massCenter()==vec(0,0,0)) {
+        return This:pos()
+    }
+}
+
+}
+
+if(first()){
+    CheckIfGrabber=1
+    ShowLaser=1
+    PublicLaser=0
+    
+    #setName("generic")
+    
+    O=owner()
+    
+    holoCreate(1,vec(0,0,0))
+    holoCreate(2,vec(0,0,0))
+    
+    holoModel(1,"hqcylinder2")
+    holoModel(2,"cube")
+    
+    holoColor(1,vec(127,0,0))
+    
+    rs()
+}
+    
+
+runOnTick(1)
+
+PG = O:weapon():type()=="weapon_physgun"
+
+R = O:keyReload()
+Shift = O:keySprint()
+Walk=O:keyWalk()
+
+Con=->Grabber
+Active = Act & PG
+
+if(Con&$Con){ 
+    Grabber["Strength",number]=2147483647
+    G=Grabber:entity()
+    G:propFreeze(1)
+    G:createWire(entity(),"Grab","T")
+    G:setAlpha(1)
+}
+
+if(!Con&Active){rs()}
+if(R&$R&Active){
+    rs()
+    print("Idle")
+    LE:propFreeze(Frz)
+}
+
+if(Walk&$Walk&O:aimEntity():id()>0&PG){
+    FT=0
+    EL=0
+
+    if(Active){rs()}
+    
+    if(!PG){
+        print("Error: You need to change your weapon to physgun")
+        EL++
+    }
+    
+    if(!Con){
+        print("Error: Grabber was not connected")
+        EL++
+    }
+    
+    if(Con&CheckIfGrabber>0&G:type():find("grab")<=0){
+        print("Error: Unknown grabber connected")
+        EL++
+    }
+    
+    if(EL>0){
+        O:soundPlay(1,1,"ambient/alarms/klaxon1.wav")
+    } elseif(EL<=0){
+        Act=1
+    }
+}
+
+
+
+
+if(Active){
+
+    if(!FT){
+        print("Trying to grab")
+        TE=O:aimEntity()
+        Speed=convarnum("physgun_wheelspeed")
+        Frz = TE:isFrozen()
+        Pang=TE:angles()
+        Roll=Pang:roll()
+        
+        FT=1
+    }
+    
+    if(Grabber["Grabbed Entity",entity]:id()==0){
+        G:setPos(TE:tpos()-vec(0,0,5))
+        G:setAng(ang(random(-180,180),random(-180,180),random(-180,180)))
+        #G:setAng(ang(TE:tpos()-G:pos())+ang(90,0,0))
+    }
+    
+    if(!On){
+        if(Grabber["Grabbed Entity",entity]==TE){
+            On=1
+            T=1
+        } else {
+            T=!T
+        }
+    } elseif(On){
+        if(!Ch){
+            LE=O:aimEntity()
+            
+            if(TE:id()==0){
+                print("Error: Reseting")
+                rs()
+            }elseif(LE==TE){
+                O:soundPlay(1,1,"garrysmod/balloon_pop_cute.wav")
+                print("Grabbed")
+                LE:setAng(Pang)
+            } else {
+                O:soundPlay(1,1,"weapons/universal/weaponempty.wav")
+            }
+            
+            if(PublicLaser){
+                holoVisible(1,players(),1)
+                holoVisible(2,players(),1)
+            }
+            
+            holoVisible(1,O,1)
+            holoVisible(2,O,1)
+            
+            Vec=LE:pos()
+            Ch=1
+        }
+        
+        if(LE:isValid()<1){
+            print("Entity became invalid. Resetting")
+            rs()
+        }
+        
+        LE:propFreeze(0)
+        
+        W=O:keyAttack1()
+        S=O:keyAttack2()
+        
+        OP=O:attachmentPos("anim_attachment_RH")
+        
+        Difr = (Vec-OP)
+        Diff = Difr:toAngle() #Subtract them to make a direction
+        
+        Eye=O:eyeAngles()
+        
+        if(Shift){
+            Aang+=ang(0,((W&$W)-(S&$S))*45,0)
+        } else {
+            Vec+=vec(W-(S&(Difr:length()>80)),0,0):rotate(W*Eye+S*Diff)*Speed/6
+        }
+        
+        G:setPos(Vec)
+        
+        RV=vec(255,0,0)
+        Rang=Diff+ang(90,0,0)+Aang
+        
+        holoColor(1,RV)
+        holoColor(2,RV)
+        
+        G:setAng(Rang) #Angle it. adding 90 to pitch because it is a cylinder, so I want to scale its Z, not its X.
+        
+        if(ShowLaser){
+            Dist = Difr:length() #Gets the distance (its the same as TargetPos:distance(CurrentPos))
+            holoPos(1,OP+Difr:normalized()*Dist/2) #Move the holo the center of them (can also be done like this: "(TargetPos+CurrentPos)/2"
+            holoAng(1,Diff:setRoll(Roll)+ang(90,0,0)) #Angle it. adding 90 to pitch because it is a cylinder, so I want to scale its Z, not its X.
+            holoScale(1,vec(0.5,0.5,Dist)/12) #Scale it to make it as long as the distance.
+        
+            holoPos(2,Vec)
+            holoAng(2,Rang)
+        }
+        
+    }
+} else {
+ holoVisible(1,players(),0)
+ holoVisible(2,players(),0)
+}
