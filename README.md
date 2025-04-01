@@ -10,7 +10,7 @@ My various Expression2 scripts.
 * **Usage**:
 	1. Spawn a hover vehicle.
 	2. Place an E2 on it, and
-	3. Sit inside.
+	3. Sit inside.</br>
 	The vehicle will twitch slightly, letting the player take a break.
 * **Scope**: Convenience, automation, installation.
 * **Status**: OK
