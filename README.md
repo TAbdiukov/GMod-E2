@@ -71,9 +71,7 @@ My various Expression2 scripts.
 * **Status**: OK
 
 ##### [ZergRush](/Expression2/ZergRush.txt)
-* **Brief**: Causes memory exhaustion within minutes. The code creates a memory the leak that makes server run out of RAM, causing it to crash when trying to allocate memory for critical operations.
-
-	The name is inspired by [zergRush for Android 2.2/2.3](https://github.com/revolutionary/zergRush/blob/master/zergRush.c).
+* **Brief**: Causes memory exhaustion within minutes. The code creates a memory the leak that makes server run out of RAM, causing it to crash when trying to allocate memory for critical operations. </br>The name is inspired by [zergRush for Android 2.2/2.3](https://github.com/revolutionary/zergRush/blob/master/zergRush.c).
 * **Scope**: In-game security research
 * **Usage**:
 	1. Place E2.
@@ -82,7 +80,7 @@ My various Expression2 scripts.
 	4. Place another E2 again. Potentially let it crash, too.
 	5. Do NOT delete anything, simply wait another 10-30 seconds.
 	6. Done!
-* **Status**: OK (YMMV with different server computing powers)
+* **Status**: OK (YMMV with different server specs)
 
 ### [Satellite](/Expression2/Satellite)
 'Satellite' engine traverses the map. Satellite code that has multiple use-cases.
