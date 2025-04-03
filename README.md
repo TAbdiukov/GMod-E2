@@ -116,7 +116,7 @@ My various Expression2 scripts.
 * **Status**: OK
 
 ### [E2P](/Expression2/E2P)
-Expression2Power (E2P) specific hazardous code. Unsupported by mainstream Expression2.
+[Expression2Power (E2Power or E2P)](https://github.com/HyvelEurope/E2Power) is an Expression2 fork that can adds several interesting but unsafe functions. Unsupported by mainstream Expression2.
 * **[e2p_defender](/Expression2/E2P/e2p_defender.txt)** – Sends RPG missiles to target direction.
 * **[e2p_getcoolgear](/Expression2/E2P/e2p_getcoolgear.txt)** – Gives user cool gear.
 * **[e2p_godmode](/Expression2/E2P/e2p_godmode.txt)** – Freezes HP at 999.
