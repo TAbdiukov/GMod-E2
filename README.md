@@ -47,7 +47,7 @@ My various Expression2 scripts.
 * **Status**: OK, enhanced
 
 ##### [Number Introspection](/Expression2/Number_Introspection.txt)
-* **Brief**: Provides an Output Out a value, and once another input  A is set to 1 and uses mathematics to figure out how many bytes are internally used for its storage. Then, it should naturally store the lowest, highest value it may store; as well as `+inf`, `-inf` and `nan`.
+* **Brief**: Introspects the floating‑point number format used by Wiremod. Using stage-based programming, it computes machine epsilon and mantissa precision, finds the maximum exponent (infers exponent‑bit width), reports total bits/bytes, and derives the largest finite value plus the smallest normal and subnormal magnitudes—also driving those to the output wires. It then probes for special values by triggering overflow and sqrt(-1) to detect +/-Inf and NaN, and performs division‑by‑zero tests, printing a log of each stage before idling.
 * **Requires**: None
 * **Scope**: low-level, research.
 * **Status**: OK.
