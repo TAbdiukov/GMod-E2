@@ -118,7 +118,7 @@ if (A && !PrevA)
     HasNaN = (NaNCandidate != NaNCandidate)
 
     # ---- Prints
-    print("=== E2 Number Benchmark ===")
+    print("=== E2 Number Introspection ===")
     print("Machine epsilon near 1: " + Eps)
     print("Mantissa bits (explicit fraction): " + MantBits)
     print("Significand precision p (incl. hidden bit): " + P)
