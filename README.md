@@ -46,6 +46,12 @@ My various Expression2 scripts.
 * **Scope**: IRL, player.
 * **Status**: OK, enhanced
 
+##### [Number Benchmark](/Expression2/Number_Benchmark.txt)
+* **Brief**: Provides an Output Out a value, and once another input  A is set to 1 and uses mathematics to figure out how many bytes are internally used for its storage. Then, it should naturally store the highest value it may store. The highest value , number of bytes, and other info should be printed using print.
+* **Requires**: None
+* **Scope**: low-level, research.
+* **Status**: OK.
+
 ##### [Physgun via Grabber](/Expression2/Physgun_via_Grabber.txt)
 * **Brief**: Allows the player to use Wiremod Grabber as a physgun, and unlike traditional physgun, allow the player to grab **other players' props and entities which were not frozen**. Uses a holographic laser to visualize the grab.
 * **Requires**: Wiremod Grabber
