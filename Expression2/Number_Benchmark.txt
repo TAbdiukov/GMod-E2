@@ -1,25 +1,26 @@
 @name Number Introspection
 @inputs A
-@outputs Out OutMaxPos OutMaxNeg OutMinNormalPos OutMinNormalNeg OutMinSubnormalPos OutMinSubnormalNeg HasPosInf HasNegInf HasNaN
+@outputs Out PosMax NegMax PosMinNormal NegMinNormal PosMinSubnormal NegMinSubnormal PosInfCandidate NegInfCandidate NaNCandidate
+@persist HasPosInf HasNegInf HasNaN
 @persist PrevA
 @persist Eps MantBits P
 @persist X Prev Count Emax ExpBits Tmp
 @persist TotalBits Bytes
 @persist Pow2Emax MaxVal
 @persist Pow2MinNormal MinSubnormal I
-@persist InfCandidate NegInfCandidate InfDiff NegInfDiff NaNCandidate
+@persist InfDiff NegInfDiff NaNCandidate
 
 # Run once per rising-edge on A
 if (first())
 {
     PrevA = 0
     Out = 0
-    OutMaxPos = 0
-    OutMaxNeg = 0
-    OutMinNormalPos = 0
-    OutMinNormalNeg = 0
-    OutMinSubnormalPos = 0
-    OutMinSubnormalNeg = 0
+    PosMax = 0
+    NegMax = 0
+    PosMinNormal = 0
+    NegMinNormal = 0
+    PosMinSubnormal = 0
+    NegMinSubnormal = 0
     HasPosInf = 0
     HasNegInf = 0
     HasNaN = 0
@@ -84,31 +85,31 @@ if (A && !PrevA)
     }
 
     # ---- 7) Output wires (both signs)
-    Out              = MaxVal             # for backward-compat: same as OutMaxPos
-    OutMaxPos        = MaxVal
-    OutMaxNeg        = -MaxVal
-    OutMinNormalPos  = Pow2MinNormal
-    OutMinNormalNeg  = -Pow2MinNormal
-    OutMinSubnormalPos = MinSubnormal
-    OutMinSubnormalNeg = -MinSubnormal
+    Out              = MaxVal             # for backward-compat: same as PosMax
+    PosMax        = MaxVal
+    NegMax        = -MaxVal
+    PosMinNormal  = Pow2MinNormal
+    NegMinNormal  = -Pow2MinNormal
+    PosMinSubnormal = MinSubnormal
+    NegMinSubnormal = -MinSubnormal
 
     # ---- 8) Special values (safe probes: overflow; NaN via Inf-Inf or sqrt(-1))
     # Produce something that overflows if infinities exist:
-    InfCandidate = Pow2Emax * Pow2Emax     # +Inf on IEEE doubles, else saturates to max finite
-    NegInfCandidate = -InfCandidate
+    PosInfCandidate = Pow2Emax * Pow2Emax     # +Inf on IEEE doubles, else saturates to max finite
+    NegInfCandidate = -PosInfCandidate
 
-    # If InfCandidate is truly infinite, (InfCandidate - InfCandidate) becomes NaN
-    InfDiff    = InfCandidate - InfCandidate
+    # If PosInfCandidate is truly infinite, (PosInfCandidate - PosInfCandidate) becomes NaN
+    InfDiff    = PosInfCandidate - PosInfCandidate
     NegInfDiff = NegInfCandidate - NegInfCandidate
 
-    HasPosInf = (InfDiff != InfDiff) && (InfCandidate > 0)        # NaN test implies we had +Inf
+    HasPosInf = (InfDiff != InfDiff) && (PosInfCandidate > 0)        # NaN test implies we had +Inf
     HasNegInf = (NegInfDiff != NegInfDiff) && (NegInfCandidate < 0)
 
     # Try to form a NaN even if overflow didn't yield an infinity:
     NaNCandidate = sqrt(-1)   # usually NaN on real-valued sqrt
     if ((NaNCandidate == NaNCandidate) && HasPosInf)
     {
-        NaNCandidate = InfCandidate - InfCandidate
+        NaNCandidate = PosInfCandidate - PosInfCandidate
     }
     if ((NaNCandidate == NaNCandidate) && HasNegInf)
     {
@@ -132,7 +133,7 @@ if (A && !PrevA)
     print("Smallest -NORMAL (closest to 0): " + (-Pow2MinNormal))
     print("Smallest +SUBNORMAL (closest to 0): " + MinSubnormal)
     print("Smallest -SUBNORMAL (closest to 0): " + (-MinSubnormal))
-    print("Out wires: Out/OutMaxPos=+" + MaxVal + "  OutMaxNeg=" + (-MaxVal))
+    print("Out wires: Out/PosMax=+" + MaxVal + "  NegMax=" + (-MaxVal))
 
     print("=== Special Values Support (overflow & sqrt tests) ===")
     if (HasPosInf)
