@@ -1,0 +1,160 @@
+@name Number Introspection  Size & Max (E2)  [Negatives + Special Values]
+@inputs A
+@outputs Out OutMaxPos OutMaxNeg OutMinNormalPos OutMinNormalNeg OutMinSubnormalPos OutMinSubnormalNeg HasPosInf HasNegInf HasNaN
+@persist PrevA
+@persist Eps MantBits P
+@persist X Prev Count Emax ExpBits Tmp
+@persist TotalBits Bytes
+@persist Pow2Emax MaxVal
+@persist Pow2MinNormal MinSubnormal I
+@persist InfCandidate NegInfCandidate InfDiff NegInfDiff NaNCandidate
+
+# Run once per rising-edge on A
+if (first())
+{
+    PrevA = 0
+    Out = 0
+    OutMaxPos = 0
+    OutMaxNeg = 0
+    OutMinNormalPos = 0
+    OutMinNormalNeg = 0
+    OutMinSubnormalPos = 0
+    OutMinSubnormalNeg = 0
+    HasPosInf = 0
+    HasNegInf = 0
+    HasNaN = 0
+}
+
+if (A && !PrevA)
+{
+    # ---- 1) Find machine epsilon and mantissa bits (explicit fraction bits)
+    Eps = 1
+    MantBits = 0
+    while (1 + Eps / 2 > 1)
+    {
+        Eps = Eps / 2
+        MantBits = MantBits + 1
+    }
+    P = MantBits + 1  # total significand precision incl. hidden bit
+
+    # ---- 2) Find maximum usable power-of-two and Emax
+    X = 1
+    Prev = X
+    Count = 0
+    while (X * 2 > X)
+    {
+        Prev = X
+        X = X * 2
+        Count = Count + 1
+    }
+    Emax = Count - 1       # last finite exponent
+    Pow2Emax = Prev        # equals 2^Emax
+
+    # ---- 3) Infer exponent-bit width from Emax
+    Tmp = Emax + 1
+    ExpBits = 0
+    while (Tmp > 0)
+    {
+        Tmp = floor(Tmp / 2)
+        ExpBits = ExpBits + 1
+    }
+
+    # ---- 4) Totals and bytes
+    TotalBits = 1 + ExpBits + MantBits
+    Bytes = floor((TotalBits + 7) / 8)
+
+    # ---- 5) Largest finite positive value: (2 - 2^-MantBits) * 2^Emax
+    MaxVal = (2 - Eps) * Pow2Emax
+
+    # ---- 6) Smallest normals / subnormals (derived, not assumed)
+    Pow2MinNormal = 1
+    I = 0
+    while (I < Emax - 1)
+    {
+        Pow2MinNormal = Pow2MinNormal / 2
+        I = I + 1
+    }
+
+    MinSubnormal = Pow2MinNormal
+    I = 0
+    while (I < MantBits)
+    {
+        MinSubnormal = MinSubnormal / 2
+        I = I + 1
+    }
+
+    # ---- 7) Output wires (both signs)
+    Out              = MaxVal             # for backward-compat: same as OutMaxPos
+    OutMaxPos        = MaxVal
+    OutMaxNeg        = -MaxVal
+    OutMinNormalPos  = Pow2MinNormal
+    OutMinNormalNeg  = -Pow2MinNormal
+    OutMinSubnormalPos = MinSubnormal
+    OutMinSubnormalNeg = -MinSubnormal
+
+    # ---- 8) Special values (safe probes: overflow; NaN via Inf-Inf or sqrt(-1))
+    # Produce something that overflows if infinities exist:
+    InfCandidate = Pow2Emax * Pow2Emax     # +Inf on IEEE doubles, else saturates to max finite
+    NegInfCandidate = -InfCandidate
+
+    # If InfCandidate is truly infinite, (InfCandidate - InfCandidate) becomes NaN
+    InfDiff    = InfCandidate - InfCandidate
+    NegInfDiff = NegInfCandidate - NegInfCandidate
+
+    HasPosInf = (InfDiff != InfDiff) && (InfCandidate > 0)        # NaN test implies we had +Inf
+    HasNegInf = (NegInfDiff != NegInfDiff) && (NegInfCandidate < 0)
+
+    # Try to form a NaN even if overflow didn't yield an infinity:
+    NaNCandidate = sqrt(-1)   # usually NaN on real-valued sqrt
+    if ((NaNCandidate == NaNCandidate) && HasPosInf)
+    {
+        NaNCandidate = InfCandidate - InfCandidate
+    }
+    if ((NaNCandidate == NaNCandidate) && HasNegInf)
+    {
+        NaNCandidate = NegInfCandidate - NegInfCandidate
+    }
+    HasNaN = (NaNCandidate != NaNCandidate)
+
+    # ---- Prints
+    print("=== E2 Number Introspection ===")
+    print("Machine epsilon near 1: " + Eps)
+    print("Mantissa bits (explicit fraction): " + MantBits)
+    print("Significand precision p (incl. hidden bit): " + P)
+    print("Max normal exponent Emax: " + Emax)
+    print("Estimated exponent bits: " + ExpBits)
+    print("Total bits (sign + exp + frac): " + TotalBits)
+    print("Bytes used by number: " + Bytes)
+    print("2^Emax: " + Pow2Emax)
+    print("Largest finite +value: " + MaxVal)
+    print("Most negative finite value: " + (-MaxVal))
+    print("Smallest +NORMAL (closest to 0): " + Pow2MinNormal)
+    print("Smallest -NORMAL (closest to 0): " + (-Pow2MinNormal))
+    print("Smallest +SUBNORMAL (closest to 0): " + MinSubnormal)
+    print("Smallest -SUBNORMAL (closest to 0): " + (-MinSubnormal))
+    print("Out wires: Out/OutMaxPos=+" + MaxVal + "  OutMaxNeg=" + (-MaxVal))
+
+    print("=== Special Values Support (overflow & sqrt tests) ===")
+    if (HasPosInf)
+        { print("+Infinity detected via overflow (Pow2Emax * Pow2Emax).") }
+    else
+        { print("+Infinity NOT detected via overflow (overflow likely saturates).") }
+
+    if (HasNegInf)
+        { print("-Infinity detected via overflow (negated).") }
+    else
+        { print("-Infinity NOT detected via overflow (overflow likely saturates).") }
+
+    if (HasNaN)
+        { print("Undefined (NaN) detected (via sqrt(-1) and/or Inf - Inf).") }
+    else
+        { print("Undefined (NaN) NOT detected with these operations.") }
+
+    # If you *also* want to try division-by-zero checks (may error on some servers),
+    # uncomment the three lines below at your own risk:
+    # number _pinf = 1 / 0
+    # number _ninf = -1 / 0
+    # number _nan  = 0 / 0
+}
+
+PrevA = A
