@@ -46,8 +46,8 @@ My various Expression2 scripts.
 * **Scope**: IRL, player.
 * **Status**: OK, enhanced
 
-##### [Number Benchmark](/Expression2/Number_Benchmark.txt)
-* **Brief**: Provides an Output Out a value, and once another input  A is set to 1 and uses mathematics to figure out how many bytes are internally used for its storage. Then, it should naturally store the highest value it may store. The highest value , number of bytes, and other info should be printed using print.
+##### [Number Introspection](/Expression2/Number_Introspection.txt)
+* **Brief**: Provides an Output Out a value, and once another input  A is set to 1 and uses mathematics to figure out how many bytes are internally used for its storage. Then, it should naturally store the lowest, highest value it may store; as well as `+inf`, `-inf` and `nan`.
 * **Requires**: None
 * **Scope**: low-level, research.
 * **Status**: OK.
