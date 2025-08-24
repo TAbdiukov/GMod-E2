@@ -1,4 +1,4 @@
-@name Number Introspection  Size & Max (E2)  [Negatives + Special Values]
+@name Number Introspection
 @inputs A
 @outputs Out OutMaxPos OutMaxNeg OutMinNormalPos OutMinNormalNeg OutMinSubnormalPos OutMinSubnormalNeg HasPosInf HasNegInf HasNaN
 @persist PrevA
@@ -117,7 +117,7 @@ if (A && !PrevA)
     HasNaN = (NaNCandidate != NaNCandidate)
 
     # ---- Prints
-    print("=== E2 Number Introspection ===")
+    print("=== E2 Number Benchmark ===")
     print("Machine epsilon near 1: " + Eps)
     print("Mantissa bits (explicit fraction): " + MantBits)
     print("Significand precision p (incl. hidden bit): " + P)
