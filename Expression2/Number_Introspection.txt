@@ -14,7 +14,7 @@
 @persist Div0_pinf Div0_ninf Div0_nan
 @persist FinalTick
 
-interval(250)
+interval(500)
 
 if(perf())
 {
