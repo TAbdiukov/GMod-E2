@@ -1,6 +1,6 @@
 # GMod-E2
 
-[![GitHub](https://img.shields.io/badge/GitHub-TAbdiukov/GMod-E2-black?logo=github)](https://github.com/TAbdiukov/GMod-E2)
+[![GitHub](https://img.shields.io/badge/GitHub-TAbdiukov/GMod--E2-black?logo=github)](https://github.com/TAbdiukov/GMod-E2)
 ![License](https://img.shields.io/github/license/TAbdiukov/GMod-E2)
 
 [![buymeacoffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/tabdiukov)
