@@ -43,7 +43,7 @@ My various Expression2 scripts.
 
 ##### [Image Writer](/Expression2/Image_Writer.txt)
 * **Brief**: Prints a real-world online image on a Wiremod Digital Screen.
-* **Requires**: hosted, used by a PHP engine [PHP scripts](/PHP_scripts) `image.php`
+* **Requires**: hosted, used by a PHP engine [PHP script](/PHP_scripts) of `image.php`
 * **Scope**: IRL, image-processing, player.
 * **Status**: OK
 
